@@ -11,12 +11,10 @@
     "128": "assets/ext/icon128.png"
   },
   "permissions": [],
-  "host_permissions": [
-    "https://dev.azure.com/*"
-  ],
+  "host_permissions": ["https://dr.dk/*"],
   "content_scripts": [
     {
-      "matches": ["https://dev.azure.com/*"],
+      "matches": ["https://dr.dk/*"],
       "js": ["src/foreground/inject/index.tsx"],
       "run_at": "document_start"
     }
