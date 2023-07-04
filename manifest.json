@@ -1,8 +1,8 @@
 {
-  "name": "MCE Enhancer",
+  "name": "Digital Eksamen Enhancer",
   "version": "0.0.1",
   "manifest_version": 3,
-  "description": "Extension for adapting SDU MCE",
+  "description": "Extension for adapting Digital Eksamen",
   "homepage_url": "https://jfagerberg.me",
   "icons": {
     "16": "assets/ext/icon16.png",
@@ -10,12 +10,10 @@
     "48": "assets/ext/icon48.png",
     "128": "assets/ext/icon128.png"
   },
-  "permissions": [],
-  "host_permissions": ["https://dr.dk/*"],
   "content_scripts": [
     {
-      "matches": ["https://dr.dk/*"],
-      "js": ["src/foreground/inject/index.tsx"],
+      "matches": ["https://dr.dk/*", "https://www.dr.dk/*"],
+      "js": ["src/foreground/index.tsx"],
       "run_at": "document_start"
     }
   ]
