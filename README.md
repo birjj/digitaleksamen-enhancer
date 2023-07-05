@@ -2,7 +2,8 @@
 
 # Digital Eksamen Enhancer
 
-A browser extension to add new features to Digital Eksamen (and related subsystems).
+A browser extension to add new features to Digital Eksamen (and related subsystems).  
+Not affiliated with Digital Eksamen in any way.
 
 Planned features:
 
