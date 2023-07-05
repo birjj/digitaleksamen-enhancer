@@ -1,11 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
 import { reactInjection } from "../utils";
-import style from "./index.module.css";
+import {
+  Anchor,
+  Button,
+  Code,
+  FileButton,
+  Group,
+  Modal,
+  Text,
+  Title,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import MassUploadModal from "./modal";
 
 const MassUploadBtn = () => {
-  const [isShowing, setIsShowing] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
+
   return (
-    <button onClick={() => setIsShowing(true)}>Add multiple questions</button>
+    <>
+      <Button onClick={open}>Add multiple questions</Button>
+      <MassUploadModal onClose={close} opened={opened} />
+    </>
   );
 };
 
