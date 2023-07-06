@@ -2,3 +2,21 @@
   display: flex;
   align-items: center;
 }
+
+.icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 999px;
+  margin-right: 0.5ch;
+}
+.icon-wrapper--success {
+  background: var(--chakra-colors-green-100);
+  color: var(--chakra-colors-green-800);
+}
+.icon-wrapper--error {
+  background: var(--chakra-colors-red-100);
+  color: var(--chakra-colors-red-800);
+}

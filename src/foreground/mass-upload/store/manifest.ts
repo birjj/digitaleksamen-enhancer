@@ -1,5 +1,7 @@
+import { atom } from "nanostores";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
+import Question from "./question";
 
 /** Represents written content in the exam (i.e. content of a text field). You can use '{{ filename }}' to embed an image file */
 const ContentSchema = z.object({
@@ -87,8 +89,39 @@ export default async function parseManifestFromFiles(files: File[]) {
     }
   }, {});
 
-  return {
-    manifest,
-    files: pathLookup,
-  };
+  return new Manifest(manifest, pathLookup);
+}
+
+export class Manifest {
+  manifest: ManifestSchema;
+  files: { [k: string]: File };
+  questions: Question[];
+
+  $uploading = atom(false);
+  $progress = atom(0);
+  $error = atom<Error | null>(null);
+
+  constructor(manifest: ManifestSchema, files: { [k: string]: File }) {
+    this.manifest = manifest;
+    this.files = files;
+    this.questions = manifest.questions.map(Question.create);
+  }
+
+  async upload() {
+    try {
+      this.$error.set(null);
+      this.$uploading.set(true);
+      this.$progress.set(0);
+
+      for (let i = 0; i < this.questions.length; ++i) {
+        this.$progress.set(i / this.questions.length);
+        await this.questions[i].upload(this);
+      }
+      this.$progress.set(1);
+      this.$uploading.set(false);
+    } catch (e) {
+      this.$error.set(e);
+      this.$uploading.set(false);
+    }
+  }
 }

@@ -1,19 +1,21 @@
 import React from "react";
 import { useStore } from "@nanostores/react";
-import { MassUploadState } from "./store";
 import type Question from "./store/question";
 import style from "./list.module.css";
 import {
   Badge,
   CircularProgress,
   CircularProgressLabel,
+  IconButton,
   List,
   ListItem,
   Text,
 } from "@chakra-ui/react";
+import type { Manifest } from "./store/manifest";
+import { CheckIcon, WarningIcon, WarningTwoIcon } from "@chakra-ui/icons";
 
 type MassUploadListProps = {
-  state: MassUploadState;
+  state: Manifest;
 };
 const MassUploadList = ({ state }: MassUploadListProps) => {
   const { questions } = state;
@@ -42,14 +44,33 @@ const MassUploadEntry = ({ entry, index }: MassUploadEntryProps) => {
   return (
     <ListItem sx={{ listStyle: "none" }}>
       <div className={style.entry}>
-        <CircularProgress
-          value={0}
-          color="blue.500"
-          size="1.25em"
-          marginRight="0.5ch"
-        />
+        {isErrored ? (
+          <div
+            className={`${style["icon-wrapper"]} ${style["icon-wrapper--error"]}`}
+          >
+            <WarningIcon width="0.75em" height="0.75em" />
+          </div>
+        ) : isSuccessful ? (
+          <div
+            className={`${style["icon-wrapper"]} ${style["icon-wrapper--success"]}`}
+          >
+            <CheckIcon width="0.75em" height="0.75em" />
+          </div>
+        ) : (
+          <CircularProgress
+            value={progress * 100}
+            color="blue.500"
+            size="1.25em"
+            marginRight="0.5ch"
+          />
+        )}
         <Text>{name || `Question ${index || "unknown"}`}</Text>
-        <Badge marginLeft="auto">{status}</Badge>
+        <Badge
+          marginLeft="auto"
+          colorScheme={isErrored ? "red" : isSuccessful ? "green" : "gray"}
+        >
+          {status}
+        </Badge>
       </div>
     </ListItem>
   );
