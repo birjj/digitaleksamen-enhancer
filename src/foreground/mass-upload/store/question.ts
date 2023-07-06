@@ -4,7 +4,6 @@ import {
   MatrixQuestionSchema,
   type BasicQuestionSchema,
   type QuestionSchema,
-  ManifestSchema,
   type Manifest,
 } from "./manifest";
 
@@ -32,6 +31,9 @@ export default abstract class Question {
   abstract uploadSelf(context: Manifest): Promise<void>;
 
   async upload(context: Manifest) {
+    if (this.$progress.get() >= 1 && !this.$error.get()) {
+      return;
+    }
     try {
       this.$status.set("Uploading question");
       this.$progress.set(0);
@@ -49,6 +51,7 @@ export default abstract class Question {
     } catch (e) {
       this.$error.set(e);
       this.$status.set("Errored");
+      throw e;
     }
   }
 }
@@ -57,6 +60,7 @@ export class BasicQuestion extends Question {
   constructor(data: BasicQuestionSchema) {
     super();
     this.$name.set(data.content.value);
+    this.answers = data.answers.map((a) => new BasicAnswer(a));
   }
 
   async uploadSelf(context: Manifest) {
@@ -70,6 +74,7 @@ export class MatrixQuestion extends Question {
   constructor(data: MatrixQuestionSchema) {
     super();
     this.$name.set(data.content.value);
+    this.answers = data.answers.map((a) => new MatrixAnswer(a));
   }
 
   async uploadSelf(context: Manifest) {
@@ -83,10 +88,22 @@ export class MatrixQuestion extends Question {
 export class Answer {
   id = crypto.randomUUID();
 
+  constructor() {}
+
   async upload(parent: Question, context: Manifest) {
     await timeoutPromise(1000 + Math.random() * 1000);
-    if (Math.random() < 0) {
+    if (Math.random() < 0.05) {
       throw new Error("Failed");
     }
+  }
+}
+class BasicAnswer extends Answer {
+  constructor(data: AnswerSchema) {
+    super();
+  }
+}
+class MatrixAnswer extends Answer {
+  constructor(data: AnswerSchema[]) {
+    super();
   }
 }
