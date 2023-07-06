@@ -1,6 +1,6 @@
 import React from "react";
 import { useStore } from "@nanostores/react";
-import type Question from "./store/question";
+import type Question from "./models/question";
 import style from "./list.module.css";
 import {
   Badge,
@@ -11,7 +11,7 @@ import {
   ListItem,
   Text,
 } from "@chakra-ui/react";
-import type { Manifest } from "./store/manifest";
+import type { Manifest } from "./models/manifest";
 import { CheckIcon, WarningIcon, WarningTwoIcon } from "@chakra-ui/icons";
 
 type MassUploadListProps = {

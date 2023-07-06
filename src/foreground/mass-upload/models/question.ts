@@ -1,11 +1,11 @@
 import { WritableAtom, atom } from "nanostores";
+import { type Manifest } from "./manifest";
 import {
   AnswerSchema,
+  BasicQuestionSchema,
   MatrixQuestionSchema,
-  type BasicQuestionSchema,
-  type QuestionSchema,
-  type Manifest,
-} from "./manifest";
+  QuestionSchema,
+} from "./schemas";
 
 // temporary for mocking purposes; remove later
 const timeoutPromise = (t: number) => new Promise((res) => setTimeout(res, t));

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useId, useRef, useState } from "react";
-import { MANIFEST_FILENAME, Manifest } from "./store/manifest";
-import parseFromFiles from "./store";
+import { Manifest } from "./models/manifest";
+import parseFromFiles from "./models";
 import MassUploadList from "./list";
 import {
   Alert,
@@ -25,6 +25,7 @@ import {
 import { useStore } from "@nanostores/react";
 import FileButton from "../components/file-button";
 import { CheckIcon, ChevronLeftIcon } from "@chakra-ui/icons";
+import { MANIFEST_FILENAME } from "./models/schemas";
 
 type MassUploadModalProps = {
   onClose: () => void;
@@ -33,11 +34,18 @@ type MassUploadModalProps = {
 
 const MassUploadModal = ({ onClose, opened = false }: MassUploadModalProps) => {
   const [context, setContext] = useState<Manifest | null>(null);
-  const { activeStep, goToNext, goToPrevious } = useSteps({
+  const { activeStep, goToNext, goToPrevious, setActiveStep } = useSteps({
     index: 0,
     count: 3,
   });
   const [closable, setClosable] = useState(true);
+
+  useEffect(() => {
+    console.log("Opened changed to", opened);
+    setContext(null);
+    setActiveStep(0);
+    setClosable(true);
+  }, [opened, setContext, setActiveStep, setClosable]);
 
   const steps = [
     <SelectFilesStep
@@ -219,8 +227,7 @@ const GreatSuccessStep = ({
   onSetClosable,
   context,
 }: GreatSuccessStepProps) => {
-  onSetClosable(true);
-
+  useEffect(() => onSetClosable(true), []);
   return (
     <>
       <Box
