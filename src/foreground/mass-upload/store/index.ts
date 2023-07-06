@@ -1,21 +1,20 @@
-import { atom } from "nanostores";
+import { WritableAtom, atom } from "nanostores";
+import parseManifestFromFiles, { ManifestSchema } from "./manifest";
+import Question from "./question";
 
-export default function parseFromFiles(files: File[]) {
-  const $entries = atom([]);
-}
-
-const parseManifest = async (files: File[]) => {
-  const manifestFile = files.find((file) => file.name === "config.json");
-  if (!manifestFile) {
-    throw new Error("Couldn't find 'config.json' in the chosen directory");
-  }
-
-  const manifestText = await manifestFile.text();
-  let manifest;
-  try {
-    manifest = JSON.parse(manifestText);
-  } catch (e) {
-    throw new Error(`Couldn't parse 'config.json'. Are you sure it's valid JSON?
-${e}`);
-  }
+export type MassUploadState = {
+  manifest: ManifestSchema;
+  files: { [k: string]: File };
+  questions: Question[];
 };
+export default async function parseFromFiles(
+  fileObjs: File[]
+): Promise<MassUploadState> {
+  const { manifest, files } = await parseManifestFromFiles(fileObjs);
+
+  return {
+    manifest,
+    files,
+    questions: manifest.questions.map(Question.create),
+  };
+}

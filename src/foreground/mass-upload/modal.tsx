@@ -1,13 +1,24 @@
-import React, { useState } from "react";
+import React, { useCallback, useId, useRef, useState } from "react";
+import { MANIFEST_FILENAME } from "./store/manifest";
+import parseFromFiles, { MassUploadState } from "./store";
+import MassUploadList from "./list";
 import {
-  Anchor,
+  Alert,
+  AlertDescription,
+  AlertIcon,
   Button,
+  ButtonGroup,
   Code,
-  FileButton,
-  Group,
+  Divider,
+  Link,
   Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Text,
-} from "@mantine/core";
+} from "@chakra-ui/react";
 
 type MassUploadModalProps = {
   onClose: () => void;
@@ -15,36 +26,121 @@ type MassUploadModalProps = {
 };
 
 const MassUploadModal = ({ onClose, opened = false }: MassUploadModalProps) => {
-  const [parsed, setParsed] = useState(null);
+  const [parsed, setParsed] = useState<MassUploadState | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const onFilesChanged = useCallback(
+    async (files: File[]) => {
+      try {
+        setParsed(await parseFromFiles(files));
+        setError(null);
+      } catch (e) {
+        setParsed(null);
+        setError(e);
+      }
+    },
+    [setParsed, setError]
+  );
 
   return (
     <Modal
-      opened={opened}
+      isOpen={opened}
       onClose={onClose}
-      centered
-      title="Add multiple questions"
       size="lg"
+      closeOnEsc={!isUploading}
+      closeOnOverlayClick={!isUploading}
     >
-      <Text>
-        To get started, select a directory containing a <Code>config.json</Code>{" "}
-        file.
-        <br />
-        See <Anchor target="_blank">[TODO]</Anchor> for more information on the
-        required format.
-      </Text>
-      <Group position="center" sx={{ margin: "1rem 0" }}>
-        <FileButton
-          inputProps={{ webkitdirectory: "", directory: "" }}
-          onChange={console.log}
-          multiple
-        >
-          {(props) => <Button {...props}>Select directory</Button>}
-        </FileButton>
-        <Button color="green" disabled={!parsed}>
-          Start uploading
-        </Button>
-      </Group>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Add multiple questions</ModalHeader>
+        <ModalCloseButton disabled={isUploading} />
+        <ModalBody>
+          <Text>
+            To get started, select a directory containing a{" "}
+            <Code>{MANIFEST_FILENAME}</Code> file.
+            <br />
+            See{" "}
+            <Link color="blue.500" target="_blank">
+              [TODO]
+            </Link>{" "}
+            for more information on the required format.
+          </Text>
+          {error ? (
+            <Alert>
+              <AlertIcon />
+              <AlertDescription>{String(error)}</AlertDescription>
+            </Alert>
+          ) : null}
+          <ButtonGroup display="flex" margin="1em 0" justifyContent="center">
+            <FileButton
+              onChange={onFilesChanged}
+              colorScheme="blue"
+              isDisabled={isUploading}
+            >
+              Select directory
+            </FileButton>
+            <Button
+              colorScheme="green"
+              isDisabled={!parsed || isUploading}
+              variant={parsed ? "solid" : "outline"}
+              onClick={() => setIsUploading(true)}
+            >
+              Start uploading
+            </Button>
+          </ButtonGroup>
+          {parsed ? (
+            <>
+              <Divider marginBottom="1em" />
+              <MassUploadList state={parsed} />
+            </>
+          ) : null}
+        </ModalBody>
+      </ModalContent>
     </Modal>
   );
 };
 export default MassUploadModal;
+
+type FileButtonProps = React.PropsWithChildren<{
+  onChange: (files: File[]) => void;
+  inputProps?: JSX.IntrinsicElements["input"];
+}> &
+  React.ComponentPropsWithoutRef<typeof Button>;
+const FileButton = ({
+  onChange,
+  inputProps = {},
+  ...props
+}: FileButtonProps) => {
+  const $input = useRef<HTMLInputElement>(null);
+  const handleChange = useCallback(
+    (ev: React.ChangeEvent<HTMLInputElement>) => {
+      onChange(Array.from(ev.currentTarget.files ?? []));
+    },
+    [onChange]
+  );
+  const handleClick = useCallback(
+    (ev: React.MouseEvent<HTMLButtonElement>) => {
+      if (props.disabled || !$input.current) {
+        return;
+      }
+      $input.current.click();
+    },
+    [props.disabled, $input]
+  );
+  return (
+    <>
+      <Button {...props} onClick={handleClick} />
+      <input
+        {...inputProps}
+        style={{ display: "none" }}
+        ref={$input}
+        type="file"
+        multiple
+        webkitdirectory=""
+        directory=""
+        onChange={handleChange}
+      />
+    </>
+  );
+};
