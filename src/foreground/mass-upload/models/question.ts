@@ -6,6 +6,7 @@ import {
   MatrixQuestionSchema,
   QuestionSchema,
 } from "./schemas";
+import { BasicAnswer, type Answer, MatrixAnswer } from "./answer";
 
 // temporary for mocking purposes; remove later
 const timeoutPromise = (t: number) => new Promise((res) => setTimeout(res, t));
@@ -82,28 +83,5 @@ export class MatrixQuestion extends Question {
     if (Math.random() < 0.25) {
       throw new Error("Failed");
     }
-  }
-}
-
-export class Answer {
-  id = crypto.randomUUID();
-
-  constructor() {}
-
-  async upload(parent: Question, context: Manifest) {
-    await timeoutPromise(1000 + Math.random() * 1000);
-    if (Math.random() < 0.05) {
-      throw new Error("Failed");
-    }
-  }
-}
-class BasicAnswer extends Answer {
-  constructor(data: AnswerSchema) {
-    super();
-  }
-}
-class MatrixAnswer extends Answer {
-  constructor(data: AnswerSchema[]) {
-    super();
   }
 }
