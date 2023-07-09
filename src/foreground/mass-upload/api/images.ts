@@ -1,12 +1,9 @@
 import { timeoutPromise } from "../../utils";
-import { callAPI, callJSON } from "./shared";
+import { callAPI, callJSON, getCookie } from "./shared";
 
 /** Uploads an image to the server, returning the URL it is available at */
 export async function uploadImage(file: File) {
-  const csrf = await chrome.cookies.get({
-    name: "ckCsrfToken",
-    url: "designer.mcq.digitaleksamen.sdu.dk",
-  });
+  const csrf = getCookie("ckCsrfToken");
   if (!csrf) {
     throw new Error(
       "Couldn't find the CSRF token for image uploads in cookies"
@@ -15,7 +12,7 @@ export async function uploadImage(file: File) {
 
   const data = new FormData();
   data.append("upload", file);
-  data.append("ckCsrfToken", csrf.value);
+  data.append("ckCsrfToken", csrf);
 
   const body = await callJSON<{
     fileName: string;
