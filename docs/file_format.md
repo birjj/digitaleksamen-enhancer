@@ -3,9 +3,8 @@
 The extension supports mass uploading questions based on a pre-written configuration file.  
 This allows you to e.g. write your exam in LaTeX, export it to images, and then have the extension upload those images to Digital Eksamen.
 
-In order for this to work it's important to write your configuration file such that the extension understand it.
-
-The extension expects you to select a directory containing a `manifest.json` file. This `manifest.json` file will be the configuration file you use to define the questions you want to upload, and the answers to each question. The exact structure of the file is specified in [a below section](#configjson-format), but a general example could be:
+The extension expects you to select a directory containing a `manifest.json` file, which will be the configuration file you use to define the questions you want to upload, and the answers to each question.  
+The exact structure of the file is specified in [a below section](#the-manifestjson-file-structure), but a general example could be:
 
 ```json
 {
@@ -55,7 +54,7 @@ The extension expects you to select a directory containing a `manifest.json` fil
 
 ## The `manifest.json` file structure
 
-The `manifest.json` file is used to describe your questions, each consisting of a content field and one (or more) answers, each consisting of a content field. In particular, the format can be described using the types:
+The `manifest.json` file is used to describe your questions, each consisting of a content field and one (or more) answers. Each answer consists of a content field. More accurately, the format can be described using the types:
 
 <table>
 <thead>
