@@ -1,8 +1,7 @@
+import { timeoutPromise } from "../../utils";
 import type { Manifest } from "./manifest";
 import type Question from "./question";
 import type { AnswerSchema } from "./schemas";
-
-const timeoutPromise = (t: number) => new Promise((res) => setTimeout(res, t));
 
 export class Answer {
   id = crypto.randomUUID();

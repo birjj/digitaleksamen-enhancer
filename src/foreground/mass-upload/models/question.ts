@@ -7,9 +7,7 @@ import {
   QuestionSchema,
 } from "./schemas";
 import { BasicAnswer, type Answer, MatrixAnswer } from "./answer";
-
-// temporary for mocking purposes; remove later
-const timeoutPromise = (t: number) => new Promise((res) => setTimeout(res, t));
+import { timeoutPromise } from "../../utils";
 
 export default abstract class Question {
   id = crypto.randomUUID();

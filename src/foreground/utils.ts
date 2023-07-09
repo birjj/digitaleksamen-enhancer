@@ -1,5 +1,8 @@
 import { createRoot } from "react-dom/client";
 
+export const timeoutPromise = (t: number) =>
+  new Promise((res) => setTimeout(res, t));
+
 export type InjectedHTMLElement = HTMLElement & {
   ___attached?: Set<InjectionConfig>;
 };
