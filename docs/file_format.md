@@ -68,10 +68,11 @@ The `manifest.json` file is used to describe your questions, each consisting of 
 <tbody>
 <tr><td>
 
-## `Content`
+### `Content`
 
 Describes the contents of a text field.
-You can use the format `{{ filename }}` to embed an image, and HTML to format your text.
+You can use the format `{{ filename }}` to embed an image, where the filename is relative to `manifest.json`.  
+You can also use HTML to format your text.
 
 </td>
 <td>
@@ -89,7 +90,7 @@ type Content = string;
 </td></tr>
 <tr><td>
 
-## `Answer`
+### `Answer`
 
 Represents an answer option, e.g. an answer to a [`BasicQuestion`](#basicquestion) or an answer to a row in a [`MatrixQuestion`](#matrixquestion).
 
@@ -114,7 +115,7 @@ type Answer = {
 </td></tr>
 <tr><td>
 
-## `BasicQuestion`
+### `BasicQuestion`
 
 Consists of the question content and multiple answers. Exactly one of the answers must be marked as `correct`.
 
@@ -145,7 +146,7 @@ type BasicQuestion = {
 </td></tr>
 <tr><td>
 
-## `MatrixQuestion`
+### `MatrixQuestion`
 
 Consists of the question content, titles for a number of columns, and multiple rows. Each row consists of multiple answers.  
 Exactly one of the answers in each row must be marked as `correct`.
@@ -186,7 +187,7 @@ type MatrixQuestion = {
 </td></tr>
 <tr><td>
 
-## `Manifest`
+### `Manifest`
 
 Describes the entire exam, as should be uploaded by the extension.
 
