@@ -10,10 +10,20 @@
     "48": "assets/ext/icon48.png",
     "128": "assets/ext/icon128.png"
   },
+  "permissions": [
+    "cookies"
+  ],
+  "host_permissions": [
+    "*://*.digitaleksamen.sdu.dk/"
+  ],
   "content_scripts": [
     {
-      "matches": ["https://dr.dk/*", "https://www.dr.dk/*"],
-      "js": ["src/foreground/index.tsx"],
+      "matches": [
+        "https://designer.mcq.digitaleksamen.sdu.dk/*"
+      ],
+      "js": [
+        "src/foreground/index.tsx"
+      ],
       "run_at": "document_start"
     }
   ]
