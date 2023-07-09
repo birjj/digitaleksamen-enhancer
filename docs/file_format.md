@@ -35,15 +35,15 @@ The exact structure of the file is specified in [a below section](#the-manifestj
         [
           {
             "content": "Opt. 1",
-            "correct": false
+            "correct": 0
           },
           {
             "content": "Opt. 2",
-            "correct": true
+            "correct": 2
           },
           {
             "content": "Opt. 3",
-            "correct": false
+            "correct": 1
           }
         ]
       ]
@@ -89,31 +89,6 @@ type Content = string;
 </td></tr>
 <tr><td>
 
-### `Answer`
-
-Represents an answer option, e.g. an answer to a [`BasicQuestion`](#basicquestion) or an answer to a row in a [`MatrixQuestion`](#matrixquestion).
-
-</td><td>
-
-```typescript
-type Answer = {
-  content: Content;
-  correct: boolean;
-};
-```
-
-</td><td>
-
-```json
-{
-  "content": "{{Q001-A001.png}}",
-  "correct": true
-}
-```
-
-</td></tr>
-<tr><td>
-
 ### `BasicQuestion`
 
 Consists of the question content and multiple answers. Exactly one of the answers must be marked as `correct`.
@@ -124,7 +99,7 @@ Consists of the question content and multiple answers. Exactly one of the answer
 type BasicQuestion = {
   type: "basic";
   content: Content;
-  answers: Answer[];
+  answers: { content: Content; correct: boolean }[];
 };
 ```
 
@@ -157,7 +132,10 @@ type MatrixQuestion = {
   type: "matrix";
   content: Content;
   titles: Content[];
-  answers: Answer[][];
+  rows: {
+    content: Content;
+    correct: number;
+  }[];
 };
 ```
 
@@ -167,18 +145,11 @@ type MatrixQuestion = {
 {
   "type": "matrix",
   "content": "Pick the lowest value in each row",
-  "titles": ["Mulighed #1", "Mulighed #2"],
+  "titles": ["Sandt", "Falskt", "Ubeviseligt"],
   "answers": [
-    [
-      { "content": "{{Q002-001-1.png}}", "correct": false },
-      { "content": "{{Q002-001-2.png}}", "correct": true },
-      { "content": "{{Q002-001-3.png}}", "correct": false }
-    ],
-    [
-      { "content": "{{Q002-002-1.png}}", "correct": true },
-      { "content": "{{Q002-002-2.png}}", "correct": false },
-      { "content": "{{Q002-002-3.png}}", "correct": false }
-    ]
+    { "content": "{{Q002-001.png}}", "correct": 0 },
+    { "content": "{{Q002-002.png}}", "correct": 2 },
+    { "content": "{{Q002-003.png}}", "correct": 1 }
   ]
 }
 ```
