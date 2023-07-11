@@ -13,7 +13,7 @@ const BasicQuestionSchema = z.object({
     .array(
       z.object({
         content: ContentSchema,
-        correct: z.boolean(),
+        correct: z.boolean().default(false),
       })
     )
     .default([]),

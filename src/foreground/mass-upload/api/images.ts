@@ -1,5 +1,4 @@
-import { timeoutPromise } from "../../utils";
-import { callAPI, callJSON, getCookie } from "./shared";
+import { callJSON, getCookie, setCookie } from "./shared";
 
 type UploadedFile = File & { uploadedUrl?: string };
 
@@ -9,7 +8,7 @@ export async function uploadImage(file: UploadedFile) {
     return file.uploadedUrl;
   }
 
-  const csrf = getCookie("ckCsrfToken");
+  const csrf = getCkCsrfToken();
   if (!csrf) {
     throw new Error(
       "Couldn't find the CSRF token for image uploads in cookies"
@@ -41,4 +40,23 @@ export async function uploadImage(file: UploadedFile) {
 
   file.uploadedUrl = body.url;
   return body.url!;
+}
+
+function getCkCsrfToken() {
+  const existingToken = getCookie("ckCsrfToken");
+  if (existingToken) {
+    return existingToken;
+  }
+
+  // if no csrf token exists, just generate a random one - the CK plugin does the same
+  let output = "";
+  const data = new Uint8Array(40);
+  window.crypto.getRandomValues(data);
+  for (let i = 0; i < data.length; ++i) {
+    const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+    let char = alphabet.charAt(data[i] % alphabet.length);
+    output += 0.5 < Math.random() ? char.toUpperCase() : char;
+  }
+  setCookie("ckCsrfToken", output);
+  return output;
 }

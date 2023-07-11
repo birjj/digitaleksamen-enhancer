@@ -11,11 +11,13 @@ import {
   addMatrixQuestion,
   addQuestionGroup,
 } from "../api/questions";
+import { setContentWithImages } from "../api/content";
 
 export default abstract class Question {
-  externalData: Partial<{ id: string }> = {};
+  externalData: Partial<{ id: string; contentId: string }> = {};
   answers: Answer[] = [];
   order = 0;
+  schema?: BasicQuestionSchema | MatrixQuestionSchema;
 
   $progress = atom(0);
   $status = atom("Not uploaded");
@@ -37,6 +39,10 @@ export default abstract class Question {
     if (this.$progress.get() >= 1 && !this.$error.get()) {
       return;
     }
+    if (!this.schema) {
+      console.log("Question", this, "has no schema");
+      throw new Error("Can't upload a question without a schema");
+    }
 
     try {
       this.$status.set("Uploading question");
@@ -46,6 +52,12 @@ export default abstract class Question {
       if (!this.externalData.id) {
         await this.uploadSelf(context);
       }
+
+      await setContentWithImages(
+        this.externalData.contentId!,
+        this.schema.content,
+        context.files
+      );
 
       for (let i = 0; i < this.answers.length; ++i) {
         const answer = this.answers[i];
@@ -67,12 +79,15 @@ export default abstract class Question {
 export class BasicQuestion extends Question {
   externalData: Partial<{ id: string; contentId: string }> = {};
   answers: BasicAnswer[] = [];
+  schema?: BasicQuestionSchema = undefined;
 
   static fromSchema(data: BasicQuestionSchema, order: number) {
     const q = new BasicQuestion();
-    q.$name.set(`BasicQuestion ${order}: ${data.content.substring(0, 16)}`);
+    q.$name.set(`BasicQuestion ${order}: ${data.content}`);
     q.answers = data.answers.map((a, i) => BasicAnswer.fromSchema(a, i));
     q.order = order;
+    q.schema = data;
+    return q;
   }
 
   async uploadSelf(context: Manifest) {
@@ -89,12 +104,15 @@ export class MatrixQuestion extends Question {
     columnIds: string[];
   }> = {};
   answers: MatrixAnswer[] = [];
+  schema?: MatrixQuestionSchema = undefined;
 
   static fromSchema(data: MatrixQuestionSchema, order: number) {
     const q = new MatrixQuestion();
-    q.$name.set(`MatrixQuestion ${order}: ${data.content.substring(0, 16)}`);
+    q.$name.set(`MatrixQuestion ${order}: ${data.content}`);
     q.answers = data.answers.map((a, i) => MatrixAnswer.fromSchema(a, i));
     q.order = order;
+    q.schema = data;
+    return q;
   }
 
   async uploadSelf(context: Manifest) {

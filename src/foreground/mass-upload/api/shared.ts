@@ -2,9 +2,7 @@ import { uploadImage } from "./images";
 
 /** Calls an API endpoint, appending the relevant headers and failing if the response code isn't successful */
 export const callAPI: typeof fetch = async (input, init) => {
-  const userGUID: string | undefined = (globalThis as any)?.$?.ajaxSettings
-    ?.headers?.["X-UserGuid"];
-  console.log("Read user GUID", userGUID, (globalThis as any)?.$);
+  const userGUID = getUserGuid();
   const defaultHeaders = {
     "X-UserGuid": userGUID ?? "",
   };
@@ -49,45 +47,21 @@ export function getCookie(name: string) {
   return match ? match[1] : null;
 }
 
-/** Sets the content of the given content field */
-export async function setContent(contentId: string, content: string) {
-  if (!contentId) {
-    throw new Error(
-      "Attempted to set content of question without specifying ID"
-    );
-  }
-  await callAPI(`/data/content/${contentId}`, {
-    headers: {
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(content),
-    method: "PUT",
-    mode: "cors",
-    credentials: "include",
-  });
-  return true;
+export function setCookie(name: string, value: string) {
+  document.cookie = `${name}=${value}; path=/`;
 }
 
-/** Sets the content of the given content field, uploading any images found first */
-export async function setContentWithImages(
-  contentId: string,
-  content: string,
-  fileLookup: { [k: string]: File }
-) {
-  const imageUrlPromises: Promise<string>[] = [];
-  const matcher = /\{\{([^\}]+)\}\}/g;
-  // create our imageUrlPromises array from each `{{ filename }}` entry in the content
-  content.replace(matcher, (fullMatch, match) => {
-    match = match.trim();
-    if (!fileLookup[match]) {
-      imageUrlPromises.push(Promise.resolve(fullMatch));
-    } else {
-      imageUrlPromises.push(uploadImage(fileLookup[match]));
+export function getUserGuid() {
+  const $scripts = Array.from(
+    document.querySelectorAll(`script[type="text/javascript"]`)
+  );
+  for (let i = 0; i < $scripts.length; ++i) {
+    const match = /userMagicToken = '([a-zA-Z0-9\-]+)';/.exec(
+      $scripts[i].textContent || ""
+    );
+    if (match) {
+      return match[1];
     }
-    return fullMatch;
-  });
-  // then wait for them all to upload
-  const imageUrls = await Promise.all(imageUrlPromises);
-  // then put them into the HTML
-  return content.replace(matcher, () => `<img src="${imageUrls.shift()}" />`);
+  }
+  throw new Error("Couldn't find user GUID");
 }

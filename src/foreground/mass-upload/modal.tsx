@@ -120,6 +120,7 @@ const SelectFilesStep = ({
         onSetContext(parsed);
         onGoForwards();
       } catch (e) {
+        console.error(e);
         setError(e);
       }
     },
@@ -168,8 +169,8 @@ const UploadFilesStep = ({
   const progress = useStore(context.$progress);
   const isUploading = useStore(context.$uploading);
 
-  const startUpload = useCallback(() => {
-    context.upload();
+  const startUpload = useCallback(async () => {
+    await context.upload();
   }, [context]);
 
   useEffect(() => {

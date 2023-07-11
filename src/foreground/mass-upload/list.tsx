@@ -54,7 +54,11 @@ const MassUploadEntry = ({ entry, index }: MassUploadEntryProps) => {
           <div
             className={`${style["icon-wrapper"]} ${style["icon-wrapper--success"]}`}
           >
-            <CheckIcon width="0.75em" height="0.75em" />
+            <CheckIcon
+              width="0.75em"
+              height="0.75em"
+              transform="translateX(1px)"
+            />
           </div>
         ) : (
           <CircularProgress
@@ -64,7 +68,14 @@ const MassUploadEntry = ({ entry, index }: MassUploadEntryProps) => {
             marginRight="0.5ch"
           />
         )}
-        <Text>{name || `Question ${index || "unknown"}`}</Text>
+        <Text
+          whiteSpace="nowrap"
+          overflow="hidden"
+          textOverflow="ellipsis"
+          marginRight="0.5ch"
+        >
+          {name || `Question ${index || "unknown"}`}
+        </Text>
         <Badge
           marginLeft="auto"
           colorScheme={isErrored ? "red" : isSuccessful ? "green" : "gray"}

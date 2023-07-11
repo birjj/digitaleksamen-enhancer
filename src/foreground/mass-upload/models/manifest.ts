@@ -45,7 +45,7 @@ export class Manifest {
   constructor(manifest: ManifestSchema, files: { [k: string]: File }) {
     this.manifest = manifest;
     this.files = files;
-    this.questions = manifest.questions.map(Question.create);
+    this.questions = manifest.questions.map(Question.fromSchema);
   }
 
   async upload() {
@@ -61,6 +61,7 @@ export class Manifest {
       this.$progress.set(1);
       this.$uploading.set(false);
     } catch (e) {
+      console.error(e);
       this.$error.set(e);
       this.$uploading.set(false);
     }
