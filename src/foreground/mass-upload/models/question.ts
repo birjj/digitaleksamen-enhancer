@@ -8,6 +8,7 @@ import {
 import { BasicAnswer, type Answer, MatrixAnswer } from "./answer";
 import {
   addBasicQuestion,
+  addMatrixColumn,
   addMatrixQuestion,
   addQuestionGroup,
 } from "../api/questions";
@@ -101,7 +102,7 @@ export class MatrixQuestion extends Question {
   externalData: Partial<{
     id: string;
     contentId: string;
-    columnIds: string[];
+    columns: { id: string; contentId: string }[];
   }> = {};
   answers: MatrixAnswer[] = [];
   schema?: MatrixQuestionSchema = undefined;
@@ -121,13 +122,34 @@ export class MatrixQuestion extends Question {
     this.externalData.id = question.Id;
     this.externalData.contentId = question.FullContent.Id;
 
+    this.externalData.columns = question.Options.map((opt) => ({
+      id: opt.Id,
+      contentId: opt.FullContent.Id,
+    }));
+    await this.uploadColumns(context);
+
     for (let i = 0; i < question.Items.length; ++i) {
       const row = question.Items[i];
-      if (this.answers[i]) {
-        this.answers[i].setApiData(row);
-      } else {
-        this.answers[i] = MatrixAnswer.fromApiData(row);
+      this.answers[i]?.setApiData(row);
+    }
+  }
+
+  async uploadColumns(context: Manifest) {
+    this.externalData.columns = this.externalData.columns || [];
+    for (let i = 0; i < this.schema!.columns.length; ++i) {
+      if (!this.externalData.columns[i]) {
+        const column = await addMatrixColumn(this.externalData.id!, i);
+        this.externalData.columns[i] = {
+          id: column.Id,
+          contentId: column.ContentId,
+        };
       }
+
+      await setContentWithImages(
+        this.externalData.columns[i].contentId,
+        this.schema!.columns[i],
+        context.files
+      );
     }
   }
 }

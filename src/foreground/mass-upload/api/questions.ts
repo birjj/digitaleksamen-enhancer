@@ -1,4 +1,4 @@
-import { callAPI, callJSON } from "./shared";
+import { callJSON } from "./shared";
 
 export type apiQuestionGroup = {
   ContentId: string;
@@ -102,7 +102,7 @@ export type apiMatrixQuestion = {
   LastUpdated: string;
   Options: {
     FullContent: { Id: string; Text: string };
-    Id: number;
+    Id: string;
     LastUpdated: string;
     Order: number;
   }[];
@@ -141,4 +141,41 @@ export async function addMatrixQuestion(groupId: string, order = 0) {
   }
 
   return body as apiMatrixQuestion;
+}
+
+type apiMatrixColumn = {
+  ContentId: string;
+  Created: string;
+  Deleted: string | null;
+  Id: string;
+  MatrixQuestionId: string;
+  Modified: string;
+  Order: number;
+};
+export async function addMatrixColumn(questionId: string, order = 0) {
+  if (!questionId) {
+    throw new Error(
+      "Attempted to add matrix column without specifying question ID"
+    );
+  }
+
+  const body = await callJSON<apiMatrixColumn>(
+    `/data/matrixquestionoption?questionId=${questionId}&order=${order}`,
+    {
+      body: null,
+      method: "POST",
+      mode: "cors",
+      credentials: "include",
+    }
+  );
+
+  if (!body.ContentId || !body.Id) {
+    throw new Error(
+      `Failed to add matrix column, got failed response from server: ${JSON.stringify(
+        body
+      )}`
+    );
+  }
+
+  return body as apiMatrixColumn;
 }

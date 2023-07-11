@@ -41,7 +41,6 @@ const MassUploadModal = ({ onClose, opened = false }: MassUploadModalProps) => {
   const [closable, setClosable] = useState(true);
 
   useEffect(() => {
-    console.log("Opened changed to", opened);
     setContext(null);
     setActiveStep(0);
     setClosable(true);
@@ -111,6 +110,7 @@ const SelectFilesStep = ({
   onSetContext,
   onGoForwards,
 }: SelectFilesStepProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<Error | null>(null);
   const onFilesChanged = useCallback(
     async (files: File[]) => {
@@ -122,6 +122,9 @@ const SelectFilesStep = ({
       } catch (e) {
         console.error(e);
         setError(e);
+        if (fileInputRef.current) {
+          (fileInputRef.current as any).value = null;
+        }
       }
     },
     [onSetContext, onGoForwards, setError]
@@ -144,7 +147,11 @@ const SelectFilesStep = ({
         for more information on the required format.
       </Text>
       <ButtonGroup display="flex" margin="1em 0 0" justifyContent="center">
-        <FileButton onChange={onFilesChanged} colorScheme="blue">
+        <FileButton
+          onChange={onFilesChanged}
+          colorScheme="blue"
+          inputRef={fileInputRef}
+        >
           Select directory
         </FileButton>
       </ButtonGroup>

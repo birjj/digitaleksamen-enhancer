@@ -1,42 +1,57 @@
 {
   "questions": [
     {
-      "type": "basic",
+      "type": "matrix",
       "content": "<em>This is HTML</em>",
+      "columns": [
+        "Left",
+        "Right"
+      ],
       "answers": [
         {
-          "content": "This answer is pure text"
+          "content": "This answer is pure text",
+          "correctColumn": 1
         },
         {
           "content": "This answer is also pure text",
-          "correct": true
+          "correctColumn": 0
         }
       ]
     },
     {
-      "type": "basic",
+      "type": "matrix",
       "content": "The following is an image:<br/>{{BQ_blue.png}}",
+      "columns": [
+        "Left",
+        "Center",
+        "Right"
+      ],
       "answers": []
     },
     {
-      "type": "basic",
+      "type": "matrix",
       "content": "{{ BQ_red.png }}",
+      "columns": [
+        "Foo",
+        "Bar",
+        "Baz"
+      ],
       "answers": [
         {
           "content": "{{BQ_red_1.png}}",
-          "correct": false
+          "correctColumn": 2
         },
         {
           "content": "{{BQ_red_2.png}}",
-          "correct": true
+          "correctColumn": 1
         },
         {
           "content": "{{BQ_red_3.png}}",
-          "correct": false
+          "correctColumn": 0
         },
         {
           "content": "{{BQ_red_4.png}}",
-          "correct": false
+          "correctColumn": 2
         }
       ]
     }

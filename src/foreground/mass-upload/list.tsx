@@ -48,17 +48,17 @@ const MassUploadEntry = ({ entry, index }: MassUploadEntryProps) => {
           <div
             className={`${style["icon-wrapper"]} ${style["icon-wrapper--error"]}`}
           >
-            <WarningIcon width="0.75em" height="0.75em" />
+            <WarningIcon
+              width="0.75em"
+              height="0.75em"
+              transform="translateX(1px)"
+            />
           </div>
         ) : isSuccessful ? (
           <div
             className={`${style["icon-wrapper"]} ${style["icon-wrapper--success"]}`}
           >
-            <CheckIcon
-              width="0.75em"
-              height="0.75em"
-              transform="translateX(1px)"
-            />
+            <CheckIcon width="0.75em" height="0.75em" />
           </div>
         ) : (
           <CircularProgress

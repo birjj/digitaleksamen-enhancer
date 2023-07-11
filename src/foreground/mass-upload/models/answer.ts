@@ -98,7 +98,7 @@ export class MatrixAnswer extends Answer {
     if (!this.schema) {
       throw new Error("Can't upload a MatrixAnswer without a schema");
     }
-    if (!parent.externalData.columnIds) {
+    if (!parent.externalData.columns) {
       throw new Error(
         "Can't upload a MatrixAnswer when parent question doesn't have options"
       );
@@ -113,10 +113,10 @@ export class MatrixAnswer extends Answer {
       context.files
     );
 
-    const columnId = parent.externalData.columnIds[this.schema.correctColumn];
+    const columnId = parent.externalData.columns[this.schema.correctColumn]?.id;
     if (!columnId) {
       throw new Error(
-        `Attempted to set MatrixAnswer column to ${this.schema.correctColumn}, but parent question only has ${parent.externalData.columnIds.length} columns`
+        `Attempted to set MatrixAnswer column to ${this.schema.correctColumn}, but parent question only has ${parent.externalData.columns.length} columns`
       );
     }
     await markMatrixAnswerAsCorrect(this.externalData.id!, columnId);

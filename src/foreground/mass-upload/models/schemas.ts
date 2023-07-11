@@ -24,7 +24,7 @@ export type BasicQuestionSchema = z.infer<typeof BasicQuestionSchema>;
 const MatrixQuestionSchema = z.object({
   type: z.literal("matrix"),
   /** the title of each column, e.g. ["Sandt", "Falskt"] */
-  titles: z.array(ContentSchema).default([]),
+  columns: z.array(ContentSchema),
   content: ContentSchema,
   answers: z
     .array(
