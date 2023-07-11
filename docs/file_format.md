@@ -30,7 +30,7 @@ The exact structure of the file is specified in [a below section](#the-manifestj
     {
       "type": "matrix",
       "content": "Pick a card, any card",
-      "titles": ["Sandt", "Falskt", "Ubeviseligt"],
+      "columns": ["Sandt", "Falskt", "Ubeviseligt"],
       "answers": [
         [
           {
@@ -130,7 +130,7 @@ Consists of the question content, titles for a number of columns, and multiple r
 type MatrixQuestion = {
   type: "matrix";
   content: Content;
-  titles: Content[];
+  columns: Content[];
   rows: {
     content: Content;
     correctColumn: number;
@@ -144,7 +144,7 @@ type MatrixQuestion = {
 {
   "type": "matrix",
   "content": "Pick the lowest value in each row",
-  "titles": ["Sandt", "Falskt", "Ubeviseligt"],
+  "columns": ["Sandt", "Falskt", "Ubeviseligt"],
   "answers": [
     { "content": "{{Q002-001.png}}", "correctColumn": 0 },
     { "content": "{{Q002-002.png}}", "correctColumn": 2 },
