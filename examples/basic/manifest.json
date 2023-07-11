@@ -1,0 +1,41 @@
+{
+  "questions": [
+    {
+      "type": "basic",
+      "content": "The following is an image:<br/>{{BQ_blue.png}}",
+      "answers": []
+    },
+    {
+      "type": "basic",
+      "content": "<em>This is HTML</em>",
+      "answers": [
+        {
+          "content": "This answer is pure text",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "type": "basic",
+      "content": "Pick a card, any card",
+      "answers": [
+        {
+          "content": "{{BQ_red_1.png}}",
+          "correct": true
+        },
+        {
+          "content": "{{BQ_red_2.png}}",
+          "correct": false
+        },
+        {
+          "content": "{{BQ_red_3.png}}",
+          "correct": false
+        },
+        {
+          "content": "{{BQ_red_4.png}}",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}
