@@ -35,15 +35,15 @@ The exact structure of the file is specified in [a below section](#the-manifestj
         [
           {
             "content": "Opt. 1",
-            "correct": 0
+            "correctColumn": 0
           },
           {
             "content": "Opt. 2",
-            "correct": 2
+            "correctColumn": 2
           },
           {
             "content": "Opt. 3",
-            "correct": 1
+            "correctColumn": 1
           }
         ]
       ]
@@ -122,8 +122,7 @@ type BasicQuestion = {
 
 ### `MatrixQuestion`
 
-Consists of the question content, titles for a number of columns, and multiple rows. Each row consists of multiple answers.  
-Exactly one of the answers in each row must be marked as `correct`.
+Consists of the question content, titles for a number of columns, and multiple rows. Each row consists of a content field and the index of the column that is the correct answer.
 
 </td><td>
 
@@ -134,7 +133,7 @@ type MatrixQuestion = {
   titles: Content[];
   rows: {
     content: Content;
-    correct: number;
+    correctColumn: number;
   }[];
 };
 ```
@@ -147,9 +146,9 @@ type MatrixQuestion = {
   "content": "Pick the lowest value in each row",
   "titles": ["Sandt", "Falskt", "Ubeviseligt"],
   "answers": [
-    { "content": "{{Q002-001.png}}", "correct": 0 },
-    { "content": "{{Q002-002.png}}", "correct": 2 },
-    { "content": "{{Q002-003.png}}", "correct": 1 }
+    { "content": "{{Q002-001.png}}", "correctColumn": 0 },
+    { "content": "{{Q002-002.png}}", "correctColumn": 2 },
+    { "content": "{{Q002-003.png}}", "correctColumn": 1 }
   ]
 }
 ```
