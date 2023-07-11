@@ -133,8 +133,12 @@ const SelectFilesStep = ({
         <Code>{MANIFEST_FILENAME}</Code> file.
         <br />
         See{" "}
-        <Link color="blue.500" target="_blank">
-          [TODO]
+        <Link
+          color="blue.500"
+          href="https://github.com/birjj/digitaleksamen-enhancer/blob/master/docs/file_format.md#mass-upload-file-format"
+          target="_blank"
+        >
+          this document
         </Link>{" "}
         for more information on the required format.
       </Text>

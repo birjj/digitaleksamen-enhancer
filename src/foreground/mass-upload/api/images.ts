@@ -1,8 +1,14 @@
 import { timeoutPromise } from "../../utils";
 import { callAPI, callJSON, getCookie } from "./shared";
 
+type UploadedFile = File & { uploadedUrl?: string };
+
 /** Uploads an image to the server, returning the URL it is available at */
-export async function uploadImage(file: File) {
+export async function uploadImage(file: UploadedFile) {
+  if (file.uploadedUrl) {
+    return file.uploadedUrl;
+  }
+
   const csrf = getCookie("ckCsrfToken");
   if (!csrf) {
     throw new Error(
@@ -33,5 +39,6 @@ export async function uploadImage(file: File) {
     );
   }
 
+  file.uploadedUrl = body.url;
   return body.url!;
 }

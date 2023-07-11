@@ -1,5 +1,16 @@
 import { callAPI, callJSON } from "./shared";
 
+export type apiBasicAnswer = {
+  BasicQuestionId: string;
+  ContentId: string;
+  Correct: boolean;
+  Created: string;
+  Deleted: string | null;
+  Id: string;
+  Modified: string;
+  Order: number;
+  Weight: number;
+};
 /** Adds an answer entry to a basic question, returning the relevant answer and content IDs */
 export async function addBasicAnswer(questionId: string, order: number) {
   if (!questionId) {
@@ -8,32 +19,22 @@ export async function addBasicAnswer(questionId: string, order: number) {
     );
   }
 
-  const body = await callJSON<{
-    BasicQuestionId: string;
-    ContentId: string;
-    Correct: boolean;
-    Created: string;
-    Deleted: string | null;
-    Id: string;
-    Modified: string;
-    Order: number;
-    Weight: number;
-  }>(`/data/questionoption?questionId=${questionId}&order=${order}`, {
-    body: null,
-    method: "POST",
-    mode: "cors",
-    credentials: "include",
-  });
+  const body = await callJSON<apiBasicAnswer>(
+    `/data/questionoption?questionId=${questionId}&order=${order}`,
+    {
+      body: null,
+      method: "POST",
+      mode: "cors",
+      credentials: "include",
+    }
+  );
 
   if (!body.ContentId || !body.Id) {
     `Failed to add answer to question, got failed response from server: ${JSON.stringify(
       body
     )}`;
   }
-  return {
-    contentId: body.ContentId!,
-    answerId: body.Id!,
-  };
+  return body as apiBasicAnswer;
 }
 
 export async function markBasicAnswerAsCorrect(answerId: string) {
@@ -52,6 +53,17 @@ export async function markBasicAnswerAsCorrect(answerId: string) {
   return true;
 }
 
+export type apiMatrixRow = {
+  ContentId: string;
+  Created: string;
+  Deleted: string | null;
+  ExternalKey: null;
+  Id: string;
+  MatrixQuestionId: string;
+  MatrixQuestionOptionId: string;
+  Modified: string;
+  Order: number;
+};
 /** Adds a row to a matrix question */
 export async function addMatrixRow(questionId: string, order = 0) {
   if (!questionId) {
@@ -60,22 +72,15 @@ export async function addMatrixRow(questionId: string, order = 0) {
     );
   }
 
-  const body = await callJSON<{
-    ContentId: string;
-    Created: string;
-    Deleted: string | null;
-    ExternalKey: null;
-    Id: string;
-    MatrixQuestionId: string;
-    MatrixQuestionOptionId: string;
-    Modified: string;
-    Order: number;
-  }>(`/data/matrixquestionitem?questionId=${questionId}&order=${order}`, {
-    body: null,
-    method: "POST",
-    mode: "cors",
-    credentials: "include",
-  });
+  const body = await callJSON<apiMatrixRow>(
+    `/data/matrixquestionitem?questionId=${questionId}&order=${order}`,
+    {
+      body: null,
+      method: "POST",
+      mode: "cors",
+      credentials: "include",
+    }
+  );
 
   if (!body.ContentId || !body.Id) {
     throw new Error(
@@ -85,23 +90,20 @@ export async function addMatrixRow(questionId: string, order = 0) {
     );
   }
 
-  return {
-    contentId: body.ContentId,
-    id: body.Id,
-  };
+  return body as apiMatrixRow;
 }
 
 export async function markMatrixAnswerAsCorrect(
   rowId: string,
-  optionId: string
+  columnId: string
 ) {
-  if (!rowId || !optionId) {
+  if (!rowId || !columnId) {
     throw new Error(
       "Attempted to mark matrix answer as correct without specifying both row and option ID"
     );
   }
 
-  await callAPI(`/data/matrixquestionitem/${rowId}?optionId=${optionId}`, {
+  await callAPI(`/data/matrixquestionitem/${rowId}?optionId=${columnId}`, {
     body: null,
     method: "PUT",
     mode: "cors",

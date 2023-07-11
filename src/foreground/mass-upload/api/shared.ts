@@ -1,3 +1,5 @@
+import { uploadImage } from "./images";
+
 /** Calls an API endpoint, appending the relevant headers and failing if the response code isn't successful */
 export const callAPI: typeof fetch = async (input, init) => {
   const userGUID: string | undefined = (globalThis as any)?.$?.ajaxSettings
@@ -64,4 +66,28 @@ export async function setContent(contentId: string, content: string) {
     credentials: "include",
   });
   return true;
+}
+
+/** Sets the content of the given content field, uploading any images found first */
+export async function setContentWithImages(
+  contentId: string,
+  content: string,
+  fileLookup: { [k: string]: File }
+) {
+  const imageUrlPromises: Promise<string>[] = [];
+  const matcher = /\{\{([^\}]+)\}\}/g;
+  // create our imageUrlPromises array from each `{{ filename }}` entry in the content
+  content.replace(matcher, (fullMatch, match) => {
+    match = match.trim();
+    if (!fileLookup[match]) {
+      imageUrlPromises.push(Promise.resolve(fullMatch));
+    } else {
+      imageUrlPromises.push(uploadImage(fileLookup[match]));
+    }
+    return fullMatch;
+  });
+  // then wait for them all to upload
+  const imageUrls = await Promise.all(imageUrlPromises);
+  // then put them into the HTML
+  return content.replace(matcher, () => `<img src="${imageUrls.shift()}" />`);
 }
