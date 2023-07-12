@@ -32,31 +32,32 @@ jobs:
         with:
           extensionDir: dist
           zipFilePath: hosted/extension.zip
-      # convert zip to crx
-      - name: Create .crx
-        uses: cardinalby/webext-buildtools-chrome-crx-action@v2
+      # convert zip to Firefox xpi
+      - name: Create .xpi
+        uses: cardinalby/webext-buildtools-firefox-sign-xpi-action@v2
         with:
           zipFilePath: hosted/extension.zip
-          crxFilePath: hosted/extension.crx
-          privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }}
-          updateXmlPath: hosted/update.xml
-          updateXmlCodebaseUrl: https://example.com/extension.crx
+          xpiFilePath: hosted/extension.xpi
+          jwtIssuer: ${{ secrets.MOZILLA_JWT_ISSUER }}
+          jwtSecret: ${{ secrets.MOZILLA_JWT_SECRET }}
+          extensionId: 4eedb682a47c49738882
+          channel: unlisted
       # publish to the release
-      - name: Release .crx
+      - name: Release .xpi
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: hosted/extension.crx
-          asset_name: extension.crx
-          asset_content_type: application/x-chrome-extension
-      - name: Release .xml
+          asset_path: hosted/extension.xpi
+          asset_name: digital_eksamen.xpi
+          asset_content_type: application/x-xpinstall
+      - name: Release .zip
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: hosted/update.xml
-          asset_name: update.xml
-          asset_content_type: application/xml
+          asset_path: hosted/extension.zip
+          asset_name: digital_eksamen.zip
+          asset_content_type: application/zip

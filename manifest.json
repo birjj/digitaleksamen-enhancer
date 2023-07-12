@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "manifest_version": 3,
   "description": "Extension for adapting Digital Eksamen",
+  "update_url": "https://digitaleksamen-enhancer.jfagerberg.me/update.xml",
   "homepage_url": "https://jfagerberg.me",
   "icons": {
     "16": "assets/ext/icon16.png",
@@ -26,5 +27,10 @@
       ],
       "run_at": "document_start"
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "digitaleksamen@jfagerberg.me"
+    }
+  }
 }
