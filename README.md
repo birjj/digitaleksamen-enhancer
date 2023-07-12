@@ -11,12 +11,11 @@ Planned features:
 
 ## Installation
 
-Make sure Node and NPM are installed. Then:
-
 <table><thead><tr><th>Chrome</th><th>Firefox</th></tr></thead>
 <tbody><tr><td>
 
-1. Download the repo
+1. Make sure Node and NPM are installed
+1. Download the repo, e.g. using `git clone`
 2. Run `npm install` and `npm run build`
 3. Navigate to `chrome://extensions` in your browser and enable developer mode (toggle in top-right)
 4. Click "Load unpacked" and choose the `dist` folder
