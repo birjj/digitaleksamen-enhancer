@@ -1,5 +1,5 @@
 {
-  "name": "azdo-enhancer",
+  "name": "digitaleksamen-enhancer",
   "private": true,
   "version": "0.0.6",
   "scripts": {
@@ -22,14 +22,13 @@
     "zod-validation-error": "^1.3.1"
   },
   "devDependencies": {
-    "@crxjs/vite-plugin": "^1.0.9",
+    "@crxjs/vite-plugin": "^1.0.14",
     "@types/chrome": "^0.0.188",
     "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5",
-    "@vitejs/plugin-react": "^1.3.0",
-    "prettier": "^2.7.1",
-    "typescript": "^4.7.3",
-    "vite": "^2.9.9",
-    "vite-plugin-svgr": "^2.1.0"
+    "@vitejs/plugin-react": "^1.3.2",
+    "prettier": "^2.8.8",
+    "typescript": "^4.9.5",
+    "vite": "^2.9.16"
   }
 }

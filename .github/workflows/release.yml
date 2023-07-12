@@ -40,7 +40,7 @@ jobs:
           xpiFilePath: hosted/extension.xpi
           jwtIssuer: ${{ secrets.MOZILLA_JWT_ISSUER }}
           jwtSecret: ${{ secrets.MOZILLA_JWT_SECRET }}
-          extensionId: 4eedb682a47c49738882
+          extensionId: digitaleksamen@jfagerberg.me
           channel: unlisted
       # publish to the release
       - name: Release .xpi
