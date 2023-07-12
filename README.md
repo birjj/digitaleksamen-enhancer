@@ -7,11 +7,11 @@ Not affiliated with Digital Eksamen in any way.
 
 Planned features:
 
-- [ ] Mass-upload questions using file-based configuration.
+- [x] Mass-upload questions using file-based configuration.
 
 ## Installation
 
-<table><thead><tr><th>Chrome</th><th>Firefox</th></tr></thead>
+<table><thead><tr><th width="441">Chrome</th><th width="441">Firefox</th></tr></thead>
 <tbody><tr><td>
 
 1. Make sure Node and NPM are installed
@@ -26,4 +26,4 @@ Planned features:
 1. Download the file ending in ".xpi"
 1. Allow the extension to be installed when prompted
 
-</td>
+</td></tr></tbody></table>
