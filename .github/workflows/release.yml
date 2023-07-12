@@ -34,7 +34,7 @@ jobs:
           zipFilePath: hosted/extension.zip
       # convert zip to Firefox xpi
       - name: Create .xpi
-        uses: cardinalby/webext-buildtools-firefox-sign-xpi-action@v2
+        uses: cardinalby/webext-buildtools-firefox-sign-xpi-action@v1
         with:
           zipFilePath: hosted/extension.zip
           xpiFilePath: hosted/extension.xpi
