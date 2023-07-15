@@ -26,7 +26,7 @@ const MassUploadBtn = () => {
 };
 
 export const injectMassUploadBtn = reactInjection(
-  `.footer .actions .list:has( [data-bind="click: addBasicQuestion"])`,
+  `.footer .actions .list`,
   ($elm) => {
     const $container = document.createElement("div");
     $container.classList.add("dee-react-root");
