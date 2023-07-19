@@ -1,3 +1,4 @@
+import { getCurrentQuestionnaireId, getQuestionnaire } from "./questionnaire";
 import { callJSON } from "./shared";
 
 export type apiQuestionGroup = {
@@ -9,12 +10,20 @@ export type apiQuestionGroup = {
   ShowQuestionsOnSamePage: boolean;
   Title: string;
 };
-export async function addQuestionGroup(order: number = 0) {
-  const [, questionnaireId] =
-    /^\/edit\/([^\/]+)\/?/.exec(location.pathname) || [];
+export async function addQuestionGroup(order?: number) {
+  const questionnaireId = getCurrentQuestionnaireId();
   if (!questionnaireId) {
     throw new Error(
       "Failed to read questionnaire ID when adding question group"
+    );
+  }
+
+  if (order === undefined) {
+    const fullQuestionnaire = await getQuestionnaire(questionnaireId);
+    order = fullQuestionnaire.QuestionGroups.length;
+    console.log(
+      "No question group order was given, read from questionnaire that it should be",
+      order
     );
   }
 

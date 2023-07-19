@@ -146,7 +146,7 @@ const SelectFilesStep = ({
         </Link>{" "}
         for more information on the required format.
       </Text>
-      <ButtonGroup display="flex" margin="1em 0 0" justifyContent="center">
+      <ButtonGroup display="flex" margin="1em 0" justifyContent="center">
         <FileButton
           onChange={onFilesChanged}
           colorScheme="blue"
@@ -156,11 +156,15 @@ const SelectFilesStep = ({
         </FileButton>
       </ButtonGroup>
       {error ? (
-        <Alert status="error" margin="1em 0 0">
+        <Alert status="error" margin="1em 0">
           <AlertIcon />
           <AlertDescription>{String(error)}</AlertDescription>
         </Alert>
       ) : null}
+      <Text>
+        Note that the questions will be <em>added</em>. If the questionnaire
+        already contains questions, those will not be removed.
+      </Text>
     </>
   );
 };

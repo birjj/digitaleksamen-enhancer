@@ -21,3 +21,6 @@
   background: var(--chakra-colors-red-100);
   color: var(--chakra-colors-red-800);
 }
+.icon-wrapper--waiting {
+  visibility: hidden;
+}

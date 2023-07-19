@@ -12,7 +12,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import type { Manifest } from "./models/manifest";
-import { CheckIcon, WarningIcon, WarningTwoIcon } from "@chakra-ui/icons";
+import {
+  CheckIcon,
+  TimeIcon,
+  WarningIcon,
+  WarningTwoIcon,
+} from "@chakra-ui/icons";
 
 type MassUploadListProps = {
   state: Manifest;
@@ -40,6 +45,7 @@ const MassUploadEntry = ({ entry, index }: MassUploadEntryProps) => {
   const error = useStore(entry.$error);
   const isErrored = !!error;
   const isSuccessful = progress >= 1 && !isErrored;
+  const isUploading = progress > 0 && !isErrored;
 
   return (
     <ListItem sx={{ listStyle: "none" }}>
@@ -60,13 +66,19 @@ const MassUploadEntry = ({ entry, index }: MassUploadEntryProps) => {
           >
             <CheckIcon width="0.75em" height="0.75em" />
           </div>
-        ) : (
+        ) : isUploading ? (
           <CircularProgress
             value={progress * 100}
             color="blue.500"
             size="1.25em"
             marginRight="0.5ch"
           />
+        ) : (
+          <div
+            className={`${style["icon-wrapper"]} ${style["icon-wrapper--waiting"]}`}
+          >
+            <TimeIcon width="0.75em" height="0.75em" />
+          </div>
         )}
         <Text
           whiteSpace="nowrap"

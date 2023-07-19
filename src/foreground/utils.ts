@@ -43,7 +43,6 @@ export function reactInjection(
       }
       $elm.___reactRoot.render(null);
       $elm.___reactRoot.unmount();
-      console.log($elm.innerHTML);
     },
   };
 }
