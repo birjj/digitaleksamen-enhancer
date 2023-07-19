@@ -11,8 +11,8 @@ import {
   addMatrixColumn,
   addMatrixQuestion,
   addQuestionGroup,
-} from "../api/questions";
-import { setContentWithImages } from "../api/content";
+} from "../../../api/questions";
+import { setContentWithImages } from "../../../api/content";
 
 export default abstract class Question {
   externalData: Partial<{ id: string; contentId: string }> = {};

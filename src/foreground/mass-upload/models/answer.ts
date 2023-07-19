@@ -3,9 +3,9 @@ import {
   addMatrixRow,
   markBasicAnswerAsCorrect,
   markMatrixAnswerAsCorrect,
-} from "../api/answers";
-import type { apiMatrixQuestion } from "../api/questions";
-import { setContentWithImages } from "../api/content";
+} from "../../../api/answers";
+import type { apiMatrixQuestion } from "../../../api/questions";
+import { setContentWithImages } from "../../../api/content";
 import type { Manifest } from "./manifest";
 import type Question from "./question";
 import type { BasicQuestion, MatrixQuestion } from "./question";
