@@ -20,13 +20,16 @@ export type InjectedReactElement = InjectedHTMLElement & {
 /** Utility function to ease the writing of attaching a React root */
 export function reactInjection(
   selector: string,
-  rootGenerator: ($elm: HTMLElement) => HTMLElement,
+  rootGenerator: ($elm: HTMLElement) => HTMLElement | null,
   reactNode: ($elm: HTMLElement) => React.ReactNode
 ): InjectionConfig {
   return {
     selector,
     mount: ($elm: InjectedReactElement) => {
       const $container = rootGenerator($elm);
+      if (!$container) {
+        return;
+      }
       const root = createRoot($container);
       Object.defineProperty($elm, "___reactRoot", {
         enumerable: false,
@@ -38,7 +41,9 @@ export function reactInjection(
       if (!$elm.___reactRoot) {
         return;
       }
+      $elm.___reactRoot.render(null);
       $elm.___reactRoot.unmount();
+      console.log($elm.innerHTML);
     },
   };
 }

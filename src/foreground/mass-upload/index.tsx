@@ -26,10 +26,25 @@ const MassUploadBtn = () => {
 };
 
 export const injectMassUploadBtn = reactInjection(
-  `.footer .actions .list`,
+  `.footer .actions .list:not(.right)`,
   ($elm) => {
+    const $otherButtons = Array.from($elm.querySelectorAll(".button"));
+    if (
+      !$otherButtons.some(($btn) => /Add question/.test($btn.textContent || ""))
+    ) {
+      return null;
+    }
+
+    // for some reason, knockout retains the old HTML when unmounting->remounting the list
+    // to avoid inactive buttons being left over, we manually delete any that exist
+    const $invalidContainers = Array.from(
+      $elm.querySelectorAll(".dee-mass-upload-btn-root")
+    );
+    $invalidContainers.forEach(($elm) => $elm.parentNode?.removeChild($elm));
+
+    // then insert our own
     const $container = document.createElement("div");
-    $container.classList.add("dee-react-root");
+    $container.classList.add("dee-react-root", "dee-mass-upload-btn-root");
 
     $elm.appendChild($container);
     return $container;

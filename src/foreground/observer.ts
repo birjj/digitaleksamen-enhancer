@@ -25,11 +25,11 @@ export default class InjectionObserver {
   attach($elm: HTMLElement) {
     this.#injections.forEach((config) => {
       const { selector, mount } = config;
-      const $elms: InjectedHTMLElement[] = Array.from(
-        $elm.querySelectorAll ? $elm.querySelectorAll(selector) : []
+      const $elms: Set<InjectedHTMLElement> = new Set(
+        Array.from($elm.querySelectorAll ? $elm.querySelectorAll(selector) : [])
       );
       if ($elm.matches && $elm.matches(selector)) {
-        $elms.push($elm);
+        $elms.add($elm);
       }
       $elms.forEach(($elm) => {
         if (!$elm.___attached) {
