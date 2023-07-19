@@ -36,6 +36,7 @@ jobs:
       - name: Create .xpi
         uses: cardinalby/webext-buildtools-firefox-sign-xpi-action@v1
         with:
+          timeoutMs: 600000
           zipFilePath: hosted/extension.zip
           xpiFilePath: hosted/extension.xpi
           jwtIssuer: ${{ secrets.MOZILLA_JWT_ISSUER }}
@@ -48,7 +49,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          timeoutMs: 600000
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: hosted/extension.xpi
           asset_name: digitaleksamen_enhancer.xpi
