@@ -32,20 +32,18 @@ The exact structure of the file is specified in [a below section](#the-manifestj
       "content": "Pick a card, any card",
       "columns": ["Sandt", "Falskt", "Ubeviseligt"],
       "answers": [
-        [
-          {
-            "content": "Opt. 1",
-            "correctColumn": 0
-          },
-          {
-            "content": "Opt. 2",
-            "correctColumn": 2
-          },
-          {
-            "content": "Opt. 3",
-            "correctColumn": 1
-          }
-        ]
+        {
+          "content": "Opt. 1",
+          "correctColumn": 0
+        },
+        {
+          "content": "Opt. 2",
+          "correctColumn": 2
+        },
+        {
+          "content": "Opt. 3",
+          "correctColumn": 1
+        }
       ]
     }
   ]
@@ -110,9 +108,9 @@ type BasicQuestion = {
   "type": "basic",
   "content": "Pick the solution to the following equation: {{Q001.png}}",
   "answers": [
-    { "content": "{{Q001-A001.png}}", "correct": true },
-    { "content": "{{Q001-A002.png}}", "correct": false },
-    { "content": "{{Q001-A003.png}}", "correct": false }
+    { "content": "{{Q001_A001.png}}", "correct": true },
+    { "content": "{{Q001_A002.png}}", "correct": false },
+    { "content": "{{Q001_A003.png}}", "correct": false }
   ]
 }
 ```
@@ -122,7 +120,7 @@ type BasicQuestion = {
 
 ### `MatrixQuestion`
 
-Consists of the question content, titles for a number of columns, and multiple rows. Each row consists of a content field and the index of the column that is the correct answer.
+Consists of the question content, titles for a number of columns, and multiple rows of answers. Each row consists of a content field and the index of the column that is the correct answer.
 
 </td><td>
 
@@ -131,7 +129,7 @@ type MatrixQuestion = {
   type: "matrix";
   content: Content;
   columns: Content[];
-  rows: {
+  answers: {
     content: Content;
     correctColumn: number;
   }[];
@@ -146,9 +144,9 @@ type MatrixQuestion = {
   "content": "Pick the lowest value in each row",
   "columns": ["Sandt", "Falskt", "Ubeviseligt"],
   "answers": [
-    { "content": "{{Q002-001.png}}", "correctColumn": 0 },
-    { "content": "{{Q002-002.png}}", "correctColumn": 2 },
-    { "content": "{{Q002-003.png}}", "correctColumn": 1 }
+    { "content": "{{Q002_001.png}}", "correctColumn": 0 },
+    { "content": "{{Q002_002.png}}", "correctColumn": 2 },
+    { "content": "{{Q002_003.png}}", "correctColumn": 1 }
   ]
 }
 ```
