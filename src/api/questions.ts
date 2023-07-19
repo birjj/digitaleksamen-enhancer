@@ -11,7 +11,7 @@ export type apiQuestionGroup = {
 };
 export async function addQuestionGroup(order: number = 0) {
   const [, questionnaireId] =
-    /^\/edit\/([^\/]+)\//.exec(location.pathname) || [];
+    /^\/edit\/([^\/]+)\/?/.exec(location.pathname) || [];
   if (!questionnaireId) {
     throw new Error(
       "Failed to read questionnaire ID when adding question group"
