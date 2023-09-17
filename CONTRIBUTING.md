@@ -14,8 +14,8 @@ flowchart LR
         questions([Questions])
         answers([Answers])
 
-        questionnaire --o|Contains| questions
-        questions --o|Contains| answers
+        questionnaire -->|Contains| questions
+        questions -->|Contains| answers
     end
     apis([./src/apis])
     ui(((UI)))
