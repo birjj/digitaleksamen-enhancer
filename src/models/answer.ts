@@ -1,24 +1,32 @@
+import { atom } from "nanostores";
 import { type BasicAnswerSchema } from "../schemas/question-basic.schema";
 import { type MatrixAnswerSchema } from "../schemas/question-matrix.schema";
+import { UploadState } from "./shared";
 
-export abstract class Answer {}
+export abstract class Answer {
+  $status = atom<UploadState>(UploadState.NONE);
+}
 
 export class BasicAnswer extends Answer {
-  schema?: BasicAnswerSchema;
+  content: string;
+  correct: boolean;
 
   static fromSchema(data: BasicAnswerSchema) {
     const a = new BasicAnswer();
-    a.schema = data;
+    a.content = data.content;
+    a.correct = data.correct;
     return a;
   }
 }
 
 export class MatrixAnswer extends Answer {
-  schema?: MatrixAnswerSchema;
+  content: string;
+  correctColumn: number;
 
   static fromSchema(data: MatrixAnswerSchema) {
     const a = new MatrixAnswer();
-    a.schema = data;
+    a.content = data.content;
+    a.correctColumn = data.correctColumn;
     return a;
   }
 }

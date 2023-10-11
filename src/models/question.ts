@@ -3,12 +3,13 @@ import { BasicAnswer, type Answer, MatrixAnswer } from "./answer";
 import { type QuestionSchema } from "../schemas/question.schema";
 import { type BasicQuestionSchema } from "../schemas/question-basic.schema";
 import { MatrixQuestionSchema } from "../schemas/question-matrix.schema";
+import { UploadState } from "./shared";
 
 export abstract class Question {
+  content: string;
   answers: Answer[] = [];
-  schema?: QuestionSchema;
 
-  $status = atom("Not uploaded");
+  $status = atom<UploadState>(UploadState.NONE);
   $name = atom("");
 
   static fromSchema(data: QuestionSchema) {
@@ -23,25 +24,24 @@ export abstract class Question {
 
 export class BasicQuestion extends Question {
   answers: BasicAnswer[] = [];
-  schema?: BasicQuestionSchema = undefined;
 
   static fromSchema(data: BasicQuestionSchema) {
     const q = new BasicQuestion();
     q.$name.set(`BasicQuestion: ${data.content}`);
+    q.content = data.content;
     q.answers = data.answers.map((a, i) => BasicAnswer.fromSchema(a));
-    q.schema = data;
     return q;
   }
 }
 export class MatrixQuestion extends Question {
   answers: MatrixAnswer[] = [];
-  schema?: MatrixQuestionSchema = undefined;
+  columns: string[];
 
   static fromSchema(data: MatrixQuestionSchema) {
     const q = new MatrixQuestion();
     q.$name.set(`MatrixQuestion: ${data.content}`);
     q.answers = data.answers.map((a) => MatrixAnswer.fromSchema(a));
-    q.schema = data;
+    q.columns = data.columns;
     return q;
   }
 }
