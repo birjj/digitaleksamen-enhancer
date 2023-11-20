@@ -1,12 +1,9 @@
 import React, { useCallback, useEffect, useId, useRef, useState } from "react";
-import { Manifest } from "./models/manifest";
-import parseFromFiles from "./models";
 import MassUploadList from "./list";
 import {
   Alert,
   AlertDescription,
   AlertIcon,
-  AlertTitle,
   Box,
   Button,
   ButtonGroup,
@@ -24,8 +21,12 @@ import {
 } from "@chakra-ui/react";
 import { useStore } from "@nanostores/react";
 import FileButton from "../components/file-button";
-import { CheckIcon, ChevronLeftIcon } from "@chakra-ui/icons";
-import { MANIFEST_FILENAME } from "./models/schemas";
+import { ChevronLeftIcon } from "@chakra-ui/icons";
+import { type Questionnaire } from "../../models/questionnaire";
+import { parseManifestFromFiles } from "../../models";
+import { MANIFEST_FILENAME } from "../../schemas";
+import { uploadQuestionnaire } from "../../api/digitaleksamen";
+import { UploadState } from "../../models/shared";
 
 type MassUploadModalProps = {
   onClose: () => void;
@@ -33,7 +34,7 @@ type MassUploadModalProps = {
 };
 
 const MassUploadModal = ({ onClose, opened = false }: MassUploadModalProps) => {
-  const [context, setContext] = useState<Manifest | null>(null);
+  const [context, setContext] = useState<Questionnaire | null>(null);
   const { activeStep, goToNext, goToPrevious, setActiveStep } = useSteps({
     index: 0,
     count: 3,
@@ -87,7 +88,7 @@ const MassUploadModal = ({ onClose, opened = false }: MassUploadModalProps) => {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add multiple questions</ModalHeader>
+        <ModalHeader>Add questionnaire from file</ModalHeader>
         {closable ? <ModalCloseButton /> : null}
         <ModalBody paddingBottom="1.5em">{steps[activeStep]}</ModalBody>
       </ModalContent>
@@ -99,10 +100,10 @@ export default MassUploadModal;
 type StepProps = {
   onGoBack: () => void;
   onGoForwards: () => void;
-  onSetContext: (ctx: Manifest) => void;
+  onSetContext: (ctx: Questionnaire) => void;
   onSetClosable: (closable: boolean) => void;
   onClose: () => void;
-  context: Manifest | null;
+  context: Questionnaire | null;
 };
 
 type SelectFilesStepProps = StepProps;
@@ -115,7 +116,7 @@ const SelectFilesStep = ({
   const onFilesChanged = useCallback(
     async (files: File[]) => {
       try {
-        const parsed = await parseFromFiles(files);
+        const parsed = await parseManifestFromFiles(files);
         setError(null);
         onSetContext(parsed);
         onGoForwards();
@@ -161,15 +162,12 @@ const SelectFilesStep = ({
           <AlertDescription>{String(error)}</AlertDescription>
         </Alert>
       ) : null}
-      <Text>
-        Note that the questions will be <em>added</em>. If the questionnaire
-        already contains questions, those will not be removed.
-      </Text>
+      <Text>These questions will be added to a new, empty questionnaire.</Text>
     </>
   );
 };
 
-type UploadFilesStepProps = StepProps & { context: Manifest };
+type UploadFilesStepProps = StepProps & { context: Questionnaire };
 const UploadFilesStep = ({
   onGoForwards,
   onGoBack,
@@ -178,10 +176,10 @@ const UploadFilesStep = ({
 }: UploadFilesStepProps) => {
   const error = useStore(context.$error);
   const progress = useStore(context.$progress);
-  const isUploading = useStore(context.$uploading);
+  const status = useStore(context.$status);
 
   const startUpload = useCallback(async () => {
-    await context.upload();
+    await uploadQuestionnaire(context);
   }, [context]);
 
   useEffect(() => {
@@ -190,8 +188,8 @@ const UploadFilesStep = ({
     }
   }, [onGoForwards, progress, error]);
   useEffect(() => {
-    onSetClosable(!isUploading);
-  }, [isUploading]);
+    onSetClosable(status !== UploadState.UPLOADING);
+  }, [status]);
 
   return (
     <>
@@ -202,7 +200,7 @@ const UploadFilesStep = ({
       <ButtonGroup display="flex" margin="1em 0" justifyContent="center">
         <Button
           colorScheme="gray"
-          isDisabled={isUploading}
+          isDisabled={status === UploadState.UPLOADING}
           onClick={onGoBack}
           leftIcon={<ChevronLeftIcon />}
           variant="outline"
@@ -211,8 +209,8 @@ const UploadFilesStep = ({
         </Button>
         <Button
           colorScheme="blue"
-          isDisabled={isUploading}
-          isLoading={isUploading}
+          isDisabled={status === UploadState.UPLOADING}
+          isLoading={status === UploadState.UPLOADING}
           onClick={startUpload}
         >
           {error ? "Retry" : "Start"} uploading
@@ -237,7 +235,7 @@ const UploadFilesStep = ({
   );
 };
 
-type GreatSuccessStepProps = StepProps & { context: Manifest };
+type GreatSuccessStepProps = StepProps & { context: Questionnaire };
 const GreatSuccessStep = ({
   onClose,
   onSetClosable,

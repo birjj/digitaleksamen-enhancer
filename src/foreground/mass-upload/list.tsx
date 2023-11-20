@@ -1,26 +1,20 @@
 import React from "react";
 import { useStore } from "@nanostores/react";
-import type Question from "./models/question";
 import style from "./list.module.css";
 import {
   Badge,
   CircularProgress,
-  CircularProgressLabel,
-  IconButton,
   List,
   ListItem,
   Text,
 } from "@chakra-ui/react";
-import type { Manifest } from "./models/manifest";
-import {
-  CheckIcon,
-  TimeIcon,
-  WarningIcon,
-  WarningTwoIcon,
-} from "@chakra-ui/icons";
+import { CheckIcon, TimeIcon, WarningIcon } from "@chakra-ui/icons";
+import { type Questionnaire } from "../../models/questionnaire";
+import { type Question } from "../../models/question";
+import { UploadState } from "../../models/shared";
 
 type MassUploadListProps = {
-  state: Manifest;
+  state: Questionnaire;
 };
 const MassUploadList = ({ state }: MassUploadListProps) => {
   const { questions } = state;
@@ -41,11 +35,9 @@ type MassUploadEntryProps = {
 const MassUploadEntry = ({ entry, index }: MassUploadEntryProps) => {
   const name = useStore(entry.$name);
   const status = useStore(entry.$status);
-  const progress = useStore(entry.$progress);
-  const error = useStore(entry.$error);
-  const isErrored = !!error;
-  const isSuccessful = progress >= 1 && !isErrored;
-  const isUploading = progress > 0 && !isErrored;
+  const isErrored = status === UploadState.ERROR;
+  const isSuccessful = status === UploadState.SUCCESS;
+  const isUploading = status === UploadState.UPLOADING;
 
   return (
     <ListItem sx={{ listStyle: "none" }}>
@@ -68,7 +60,7 @@ const MassUploadEntry = ({ entry, index }: MassUploadEntryProps) => {
           </div>
         ) : isUploading ? (
           <CircularProgress
-            value={progress * 100}
+            isIndeterminate
             color="blue.500"
             size="1.25em"
             marginRight="0.5ch"

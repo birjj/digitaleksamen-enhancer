@@ -1,8 +1,8 @@
 import React from "react";
 import { reactInjection } from "../utils";
-import MassUploadModal from "./modal";
 import { Button, ChakraProvider, useDisclosure } from "@chakra-ui/react";
 import LogoIcon from "../components/logo";
+import MassUploadModal from "./modal";
 
 const MassUploadBtn = () => {
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false });
@@ -18,7 +18,7 @@ const MassUploadBtn = () => {
         onClick={onOpen}
         leftIcon={<LogoIcon />}
       >
-        Add multiple questions
+        Add questionnaire from file
       </Button>
       <MassUploadModal onClose={onClose} opened={isOpen} />
     </>
@@ -30,7 +30,9 @@ export const injectMassUploadBtn = reactInjection(
   ($elm) => {
     const $otherButtons = Array.from($elm.querySelectorAll(".button"));
     if (
-      !$otherButtons.some(($btn) => /Add question/.test($btn.textContent || ""))
+      !$otherButtons.some(($btn) =>
+        /Create questionnaire/i.test($btn.textContent || "")
+      )
     ) {
       return null;
     }
