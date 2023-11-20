@@ -1,5 +1,4 @@
-import { getCurrentQuestionnaireId, getQuestionnaire } from "./questionnaire";
-import { callJSON } from "./shared";
+import { callAPI, callJSON } from "./shared";
 
 export type apiQuestionGroup = {
   ContentId: string;
@@ -10,21 +9,9 @@ export type apiQuestionGroup = {
   ShowQuestionsOnSamePage: boolean;
   Title: string;
 };
-export async function addQuestionGroup(order?: number) {
-  const questionnaireId = getCurrentQuestionnaireId();
+export async function addQuestionGroup(questionnaireId: string, order: number) {
   if (!questionnaireId) {
-    throw new Error(
-      "Failed to read questionnaire ID when adding question group"
-    );
-  }
-
-  if (order === undefined) {
-    const fullQuestionnaire = await getQuestionnaire(questionnaireId);
-    order = fullQuestionnaire.QuestionGroups.length;
-    console.log(
-      "No question group order was given, read from questionnaire that it should be",
-      order
-    );
+    throw new Error("Questionnaire ID is required when adding question group");
   }
 
   const body = await callJSON<apiQuestionGroup>(
@@ -46,6 +33,19 @@ export async function addQuestionGroup(order?: number) {
   }
 
   return body as apiQuestionGroup;
+}
+
+export async function deleteQuestionGroup(id: string) {
+  if (!id) {
+    throw new Error("Question group ID is required for deletion");
+  }
+
+  await callAPI(`/data/questiongroup/${id}`, {
+    body: null,
+    method: "DELETE",
+    mode: "cors",
+    credentials: "include",
+  });
 }
 
 export type apiBasicQuestion = {
@@ -187,4 +187,30 @@ export async function addMatrixColumn(questionId: string, order = 0) {
   }
 
   return body as apiMatrixColumn;
+}
+
+export async function deleteMatrixColumn(id: string) {
+  if (!id) {
+    throw new Error("Matrix column ID is required for deletion");
+  }
+
+  await callAPI(`/data/matrixquestionoption/${id}`, {
+    body: null,
+    method: "DELETE",
+    mode: "cors",
+    credentials: "include",
+  });
+}
+
+export async function deleteMatrixRow(id: string) {
+  if (!id) {
+    throw new Error("Matrix row ID is required for deletion");
+  }
+
+  await callAPI(`/data/matrixquestionitem/${id}`, {
+    body: null,
+    method: "DELETE",
+    mode: "cors",
+    credentials: "include",
+  });
 }

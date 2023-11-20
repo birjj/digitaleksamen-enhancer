@@ -5,7 +5,13 @@ import { type BasicQuestionSchema } from "../schemas/question-basic.schema";
 import { MatrixQuestionSchema } from "../schemas/question-matrix.schema";
 import { UploadState } from "./shared";
 
+export enum QuestionType {
+  BASIC,
+  MATRIX,
+}
+
 export abstract class Question {
+  abstract type: QuestionType;
   content: string;
   answers: Answer[] = [];
 
@@ -23,6 +29,7 @@ export abstract class Question {
 }
 
 export class BasicQuestion extends Question {
+  type = QuestionType.BASIC;
   answers: BasicAnswer[] = [];
 
   static fromSchema(data: BasicQuestionSchema) {
@@ -34,12 +41,14 @@ export class BasicQuestion extends Question {
   }
 }
 export class MatrixQuestion extends Question {
+  type = QuestionType.MATRIX;
   answers: MatrixAnswer[] = [];
   columns: string[];
 
   static fromSchema(data: MatrixQuestionSchema) {
     const q = new MatrixQuestion();
     q.$name.set(`MatrixQuestion: ${data.content}`);
+    q.content = data.content;
     q.answers = data.answers.map((a) => MatrixAnswer.fromSchema(a));
     q.columns = data.columns;
     return q;
