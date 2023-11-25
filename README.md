@@ -15,12 +15,18 @@ To use you'll need a valid `manifest.json` file (you can use [the examples](/exa
 1. Click the new "Add questionnaire from file" button:
    <div align="center">
 
-   <img src="docs/mass-upload.png" width="392" />
+   <img src="docs/mass-upload-btn.png" width="392" />
 
    </div>
 
-1. Choose the folder containing your `manifest.json` file, or the `manifest.json` file itself (depending on what your browser allows you to do).
-1. Wait for the upload to complete.
+1. Choose the folder containing your `manifest.json` file, or the `manifest.json` file itself (depending on what your browser allows you to do):
+   <div align="center">
+
+   <img src="docs/mass-upload-folder.png" width="392" />
+
+   </div>
+
+1. Wait for the upload to complete:
    <div align="center">
 
    <img src="docs/mass-upload-process.png" width="392" />
