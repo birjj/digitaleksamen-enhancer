@@ -16,7 +16,6 @@ export abstract class Question {
   answers: Answer[] = [];
 
   $status = atom<UploadState>(UploadState.NONE);
-  $name = atom("");
 
   static fromSchema(data: QuestionSchema) {
     switch (data.type) {
@@ -34,7 +33,6 @@ export class BasicQuestion extends Question {
 
   static fromSchema(data: BasicQuestionSchema) {
     const q = new BasicQuestion();
-    q.$name.set(`BasicQuestion: ${data.content}`);
     q.content = data.content;
     q.answers = data.answers.map((a, i) => BasicAnswer.fromSchema(a));
     return q;
@@ -47,7 +45,6 @@ export class MatrixQuestion extends Question {
 
   static fromSchema(data: MatrixQuestionSchema) {
     const q = new MatrixQuestion();
-    q.$name.set(`MatrixQuestion: ${data.content}`);
     q.content = data.content;
     q.answers = data.answers.map((a) => MatrixAnswer.fromSchema(a));
     q.columns = data.columns;

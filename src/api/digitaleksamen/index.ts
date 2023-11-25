@@ -24,30 +24,30 @@ import {
   deleteMatrixColumn,
   deleteMatrixRow,
 } from "./questions";
+import { logError, logInfo, logSuccess } from "../log";
 
 export const uploadQuestionnaire: QuestionnaireUploader = async (model) => {
   try {
-    model.$error.set(null);
     model.$status.set(UploadState.UPLOADING);
-    model.$progress.set(0);
 
     // re-use the questionnaire ID if possible, to avoid clogging up the list if we error
     if (!model.id) {
+      logInfo(`Creating new questionnaire`);
       model.id = await createQuestionnaire();
     } else {
+      logInfo(`Clearing existing questionnaire ${model.id}`);
       await clearQuestionnaire(model.id);
     }
 
     // upload each of the questions
     for (let i = 0; i < model.questions.length; ++i) {
-      model.$progress.set(i / model.questions.length);
       await uploadQuestion(model, model.questions[i], i);
     }
-    model.$progress.set(1);
     model.$status.set(UploadState.SUCCESS);
+    logSuccess(`Finished uploading questionnaire ${model.id}`);
   } catch (e) {
     console.error(e);
-    model.$error.set(e);
+    logError(e instanceof Error ? e.toString() : `${e}`);
     model.$status.set(UploadState.ERROR);
   }
 };
@@ -60,6 +60,7 @@ async function uploadQuestion(
   try {
     model.$status.set(UploadState.UPLOADING);
 
+    logInfo(`Adding question group to ${questionnaire.id}`);
     const group = await addQuestionGroup(questionnaire.id!, order);
     switch (model.type) {
       case QuestionType.BASIC:
@@ -96,6 +97,7 @@ async function uploadBasicQuestion(
 ) {
   try {
     model.$status.set(UploadState.UPLOADING);
+    logInfo(`Uploading basic question ${order}`);
 
     const question = await addBasicQuestion(groupId, order);
     await setContentWithImages(question.FullContent.Id, model.content, files);
@@ -113,6 +115,7 @@ async function uploadBasicQuestion(
     }
 
     model.$status.set(UploadState.SUCCESS);
+    logSuccess(`Finished uploading basic question ${order}`);
   } catch (e) {
     model.$status.set(UploadState.ERROR);
     throw e;
@@ -128,6 +131,7 @@ async function uploadMatrixQuestion(
 ) {
   try {
     model.$status.set(UploadState.UPLOADING);
+    logInfo(`Uploading matrix question ${order}`);
 
     // add the question and delete all of its pre-defined rows/columns
     console.log("Matrix question", model);
@@ -161,6 +165,7 @@ async function uploadMatrixQuestion(
     }
 
     model.$status.set(UploadState.SUCCESS);
+    logSuccess(`Finished uploading matrix question ${order}`);
   } catch (e) {
     model.$status.set(UploadState.ERROR);
     throw e;

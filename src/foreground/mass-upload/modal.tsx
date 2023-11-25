@@ -1,273 +1,120 @@
-import React, { useCallback, useEffect, useId, useRef, useState } from "react";
-import MassUploadList from "./list";
+import React, { useState } from "react";
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  Box,
+  Badge,
   Button,
-  ButtonGroup,
-  Code,
-  Link,
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Progress,
-  Text,
   useSteps,
 } from "@chakra-ui/react";
-import { useStore } from "@nanostores/react";
-import FileButton from "../components/file-button";
-import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { type Questionnaire } from "../../models/questionnaire";
-import { parseManifestFromFiles } from "../../models";
-import { MANIFEST_FILENAME } from "../../schemas";
-import { uploadQuestionnaire } from "../../api/digitaleksamen";
+import { useStore } from "@nanostores/react";
 import { UploadState } from "../../models/shared";
+import LogView from "../components/log-view";
+import { atom } from "nanostores";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 
 type MassUploadModalProps = {
   onClose: () => void;
   opened?: boolean;
+  questionnaire: Questionnaire | null;
 };
 
-const MassUploadModal = ({ onClose, opened = false }: MassUploadModalProps) => {
-  const [context, setContext] = useState<Questionnaire | null>(null);
-  const { activeStep, goToNext, goToPrevious, setActiveStep } = useSteps({
-    index: 0,
-    count: 3,
-  });
-  const [closable, setClosable] = useState(true);
-
-  useEffect(() => {
-    setContext(null);
-    setActiveStep(0);
-    setClosable(true);
-  }, [opened, setContext, setActiveStep, setClosable]);
-
-  const steps = [
-    <SelectFilesStep
-      onGoBack={goToPrevious}
-      onGoForwards={goToNext}
-      onSetContext={setContext}
-      onSetClosable={setClosable}
-      onClose={onClose}
-      context={context}
-    />,
-    context ? (
-      <UploadFilesStep
-        onGoBack={goToPrevious}
-        onGoForwards={goToNext}
-        onSetContext={setContext}
-        onSetClosable={setClosable}
-        onClose={onClose}
-        context={context}
-      />
-    ) : null,
-    context ? (
-      <GreatSuccessStep
-        onGoBack={goToPrevious}
-        onGoForwards={goToNext}
-        onSetContext={setContext}
-        onSetClosable={setClosable}
-        onClose={onClose}
-        context={context}
-      />
-    ) : null,
-  ];
+const $defaultState = atom<UploadState>(UploadState.NONE);
+const MassUploadModal = ({
+  onClose,
+  opened = false,
+  questionnaire,
+}: MassUploadModalProps) => {
+  const status = useStore(
+    questionnaire ? questionnaire.$status : $defaultState
+  );
+  const isUploading = status === UploadState.UPLOADING;
+  const isClosable = !isUploading;
 
   return (
     <Modal
       isOpen={opened}
       onClose={onClose}
       size="lg"
-      closeOnEsc={closable}
-      closeOnOverlayClick={closable}
+      closeOnEsc={isClosable}
+      closeOnOverlayClick={isClosable}
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add questionnaire from file</ModalHeader>
-        {closable ? <ModalCloseButton /> : null}
-        <ModalBody paddingBottom="1.5em">{steps[activeStep]}</ModalBody>
+        <ModalHeader>Adding questionnaire from file</ModalHeader>
+        {isClosable ? <ModalCloseButton /> : null}
+        <ModalBody paddingBottom="1.5em">
+          <Flex direction="column" alignItems="center">
+            <LogView />
+            {questionnaire ? (
+              <ContinueButton questionnaire={questionnaire} />
+            ) : null}
+          </Flex>
+        </ModalBody>
       </ModalContent>
     </Modal>
   );
 };
 export default MassUploadModal;
 
-type StepProps = {
-  onGoBack: () => void;
-  onGoForwards: () => void;
-  onSetContext: (ctx: Questionnaire) => void;
-  onSetClosable: (closable: boolean) => void;
-  onClose: () => void;
-  context: Questionnaire | null;
+const StatusBadge = ({ status }: { status: UploadState }) => {
+  switch (status) {
+    case UploadState.NONE:
+      return <Badge>Waiting</Badge>;
+    case UploadState.UPLOADING:
+      return (
+        <Badge variant="subtle" colorScheme="blue">
+          Uploading
+        </Badge>
+      );
+    case UploadState.SUCCESS:
+      return (
+        <Badge variant="solid" colorScheme="green">
+          Success
+        </Badge>
+      );
+    case UploadState.ERROR:
+      return (
+        <Badge variant="solid" colorScheme="red">
+          Error
+        </Badge>
+      );
+  }
 };
 
-type SelectFilesStepProps = StepProps;
-const SelectFilesStep = ({
-  onSetContext,
-  onGoForwards,
-}: SelectFilesStepProps) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const onFilesChanged = useCallback(
-    async (files: File[]) => {
-      try {
-        const parsed = await parseManifestFromFiles(files);
-        setError(null);
-        onSetContext(parsed);
-        onGoForwards();
-      } catch (e) {
-        console.error(e);
-        setError(e);
-        if (fileInputRef.current) {
-          (fileInputRef.current as any).value = null;
-        }
-      }
-    },
-    [onSetContext, onGoForwards, setError]
-  );
-
-  return (
-    <>
-      <Text>
-        To get started, select a directory containing a{" "}
-        <Code>{MANIFEST_FILENAME}</Code> file.
-        <br />
-        See{" "}
-        <Link
-          color="blue.500"
-          href="https://github.com/birjj/digitaleksamen-enhancer/blob/master/docs/file_format.md#mass-upload-file-format"
-          target="_blank"
-        >
-          this document
-        </Link>{" "}
-        for more information on the required format.
-      </Text>
-      <ButtonGroup display="flex" margin="1em 0" justifyContent="center">
-        <FileButton
-          onChange={onFilesChanged}
-          colorScheme="blue"
-          inputRef={fileInputRef}
-        >
-          Select directory
-        </FileButton>
-      </ButtonGroup>
-      {error ? (
-        <Alert status="error" margin="1em 0">
-          <AlertIcon />
-          <AlertDescription>{String(error)}</AlertDescription>
-        </Alert>
-      ) : null}
-      <Text>These questions will be added to a new, empty questionnaire.</Text>
-    </>
-  );
-};
-
-type UploadFilesStepProps = StepProps & { context: Questionnaire };
-const UploadFilesStep = ({
-  onGoForwards,
-  onGoBack,
-  onSetClosable,
-  context,
-}: UploadFilesStepProps) => {
-  const error = useStore(context.$error);
-  const progress = useStore(context.$progress);
-  const status = useStore(context.$status);
-
-  const startUpload = useCallback(async () => {
-    await uploadQuestionnaire(context);
-  }, [context]);
-
-  useEffect(() => {
-    if (progress >= 1 && !error) {
-      onGoForwards();
-    }
-  }, [onGoForwards, progress, error]);
-  useEffect(() => {
-    onSetClosable(status !== UploadState.UPLOADING);
-  }, [status]);
-
-  return (
-    <>
-      <Text>
-        Validate that the questions look as expected, and then click to start
-        uploading:
-      </Text>
-      <ButtonGroup display="flex" margin="1em 0" justifyContent="center">
-        <Button
-          colorScheme="gray"
-          isDisabled={status === UploadState.UPLOADING}
-          onClick={onGoBack}
-          leftIcon={<ChevronLeftIcon />}
-          variant="outline"
-        >
-          Go back
-        </Button>
-        <Button
-          colorScheme="blue"
-          isDisabled={status === UploadState.UPLOADING}
-          isLoading={status === UploadState.UPLOADING}
-          onClick={startUpload}
-        >
-          {error ? "Retry" : "Start"} uploading
-        </Button>
-      </ButtonGroup>
-      <Progress
-        value={progress * 100}
-        isAnimated={!error}
-        hasStripe={!error}
-        colorScheme={error ? "red" : "green"}
-        marginBottom="1em"
-        borderRadius="999px"
-      />
-      {error ? (
-        <Alert status="error" marginBottom="1em">
-          <AlertIcon />
-          <AlertDescription>{String(error)}</AlertDescription>
-        </Alert>
-      ) : null}
-      <MassUploadList state={context} />
-    </>
-  );
-};
-
-type GreatSuccessStepProps = StepProps & { context: Questionnaire };
-const GreatSuccessStep = ({
-  onClose,
-  onSetClosable,
-  context,
-}: GreatSuccessStepProps) => {
-  useEffect(() => onSetClosable(true), []);
-  return (
-    <>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        textAlign="center"
-        height="200px"
+const ContinueButton = ({
+  questionnaire,
+}: {
+  questionnaire: Questionnaire;
+}) => {
+  const status = useStore(questionnaire.$status);
+  if (status === UploadState.SUCCESS) {
+    return (
+      <Button
+        as="a"
+        href="https://google.com"
+        colorScheme="green"
+        marginTop={4}
+        width="full"
+        rightIcon={<ArrowForwardIcon />}
       >
-        <Text mt={4} mb={1} fontSize="lg" colorScheme="green">
-          Questions uploaded!
-        </Text>
-        <Text>You can now reload the page to see the changes.</Text>
-        <ButtonGroup display="flex" margin="1em 0" justifyContent="center">
-          <Button
-            colorScheme="blue"
-            onClick={() => {
-              location.reload();
-              onClose();
-            }}
-          >
-            Reload page
-          </Button>
-        </ButtonGroup>
-      </Box>
-    </>
+        View uploaded questionnaire
+      </Button>
+    );
+  }
+  return (
+    <Button
+      isDisabled
+      isLoading={status === UploadState.UPLOADING}
+      marginTop={4}
+      width="full"
+    >
+      {status === UploadState.UPLOADING ? "Uploading..." : "Awaiting upload..."}
+    </Button>
   );
 };

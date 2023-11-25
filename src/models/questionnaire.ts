@@ -9,9 +9,7 @@ export class Questionnaire {
   files: { [k: string]: File };
   questions: Question[];
 
-  $error = atom<Error | null>(null);
   $status = atom<UploadState>(UploadState.NONE);
-  $progress = atom(0);
 
   constructor(schema: QuestionnaireSchema, files: { [k: string]: File }) {
     this.schema = schema;
