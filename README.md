@@ -5,9 +5,14 @@
 A browser extension to add new features to Digital Eksamen (and related subsystems).  
 Not affiliated with Digital Eksamen in any way.
 
-<details><summary>Mass-upload questions using file-based configuration <em>(click to show more)</em></summary>
+<dl>
+<dt>Mass-upload questions using file-based configuration</dt>
+<dd>
 
-Allows you to specify a set of exam questions [using files](/docs/file_format.md), and then uploading those to a questionnaire in one go.  
+Allows you to specify a set of exam questions [using files](/docs/file_format.md), and then upload those in one go.  
+
+<details><summary><em>Show instructions</em></summary>
+   
 To use you'll need a valid `manifest.json` file (you can use [the examples](/examples/) to try it out), and then:
 
 1. Make sure the extension is [installed](#installation)
@@ -36,6 +41,7 @@ To use you'll need a valid `manifest.json` file (you can use [the examples](/exa
 1. **Verify** that the uploaded exam matches your expectations.
 
 </details>
+</dd></dl>
 
 ## Installation
 
