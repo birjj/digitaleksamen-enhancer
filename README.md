@@ -5,9 +5,31 @@
 A browser extension to add new features to Digital Eksamen (and related subsystems).  
 Not affiliated with Digital Eksamen in any way.
 
-Planned features:
+<details><summary>Mass-upload questions using file-based configuration <em>(click to show more)</em></summary>
 
-- [x] Mass-upload questions using file-based configuration.
+Allows you to specify a set of exam questions [using files](/docs/file_format.md), and then uploading those to a questionnaire in one go.  
+To use you'll need a valid `manifest.json` file (you can use [the examples](/examples/) to try it out), and then:
+
+1. Make sure the extension is [installed](#installation)
+1. Navigate to [the list of questionnaires](https://designer.mcq.digitaleksamen.sdu.dk/) on DigitalEksamen
+1. Click the new "Add questionnaire from file" button:
+   <div align="center">
+
+   <img src="docs/mass-upload.png" width="392" />
+
+   </div>
+
+1. Choose the folder containing your `manifest.json` file, or the `manifest.json` file itself (depending on what your browser allows you to do).
+1. Wait for the upload to complete.
+   <div align="center">
+
+   <img src="docs/mass-upload-process.png" width="392" />
+
+   </div>
+
+1. **Verify** that the uploaded exam matches your expectations.
+
+</details>
 
 ## Installation
 
