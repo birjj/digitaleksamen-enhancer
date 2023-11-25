@@ -1,10 +1,4 @@
-import React, {
-  FormEventHandler,
-  useCallback,
-  useId,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { reactInjection } from "../utils";
 import {
   Button,
@@ -16,13 +10,14 @@ import LogoIcon from "../components/logo";
 import MassUploadModal from "./modal";
 import { QuestionIcon } from "@chakra-ui/icons";
 import FileButton from "../components/file-button";
-import { logError, logWarn, resetLog } from "../../api/log";
-import { uploadQuestionnaire } from "../../api/digitaleksamen";
-import { QuestionnaireUploader } from "../../api/types";
+import { logError, resetLog } from "../../api/log";
+import deAPI from "../../api/digitaleksamen";
+import { APIProvider } from "../../api/types";
 import { parseManifestFromFiles } from "../../models";
 import { type Questionnaire } from "../../models/questionnaire";
+import ErrorBoundaryModal from "../components/error-boundary-modal";
 
-const MassUploadBtn = ({ uploader }: { uploader: QuestionnaireUploader }) => {
+const MassUploadBtn = ({ api }: { api: APIProvider }) => {
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false });
 
   const $fileInput = useRef<HTMLInputElement>(null);
@@ -42,12 +37,12 @@ const MassUploadBtn = ({ uploader }: { uploader: QuestionnaireUploader }) => {
       try {
         const parsed = await parseManifestFromFiles(files);
         setQuestionnaire(parsed);
-        uploader(parsed);
+        api.uploadQuestionnaire(parsed);
       } catch (err) {
         logError(`Failed to parse questionnaire:\n${err}`);
       }
     },
-    [uploader, onOpen, resetLog]
+    [api?.uploadQuestionnaire, onOpen, resetLog]
   );
 
   /** Resets the file input and closes the modal */
@@ -98,6 +93,7 @@ const MassUploadBtn = ({ uploader }: { uploader: QuestionnaireUploader }) => {
         </Button>
       </ButtonGroup>
       <MassUploadModal
+        api={api}
         onClose={doClose}
         opened={isOpen}
         questionnaire={questionnaire}
@@ -134,7 +130,9 @@ export const injectMassUploadBtn = reactInjection(
   },
   () => (
     <ChakraProvider>
-      <MassUploadBtn uploader={uploadQuestionnaire} />
+      <ErrorBoundaryModal>
+        <MassUploadBtn api={deAPI} />
+      </ErrorBoundaryModal>
     </ChakraProvider>
   )
 );

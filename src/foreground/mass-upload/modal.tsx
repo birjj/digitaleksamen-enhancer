@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Badge,
   Button,
@@ -9,7 +9,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  useSteps,
 } from "@chakra-ui/react";
 import { type Questionnaire } from "../../models/questionnaire";
 import { useStore } from "@nanostores/react";
@@ -17,11 +16,13 @@ import { UploadState } from "../../models/shared";
 import LogView from "../components/log-view";
 import { atom } from "nanostores";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { APIProvider } from "../../api/types";
 
 type MassUploadModalProps = {
   onClose: () => void;
   opened?: boolean;
   questionnaire: Questionnaire | null;
+  api: APIProvider;
 };
 
 const $defaultState = atom<UploadState>(UploadState.NONE);
@@ -29,6 +30,7 @@ const MassUploadModal = ({
   onClose,
   opened = false,
   questionnaire,
+  api,
 }: MassUploadModalProps) => {
   const status = useStore(
     questionnaire ? questionnaire.$status : $defaultState
@@ -52,7 +54,7 @@ const MassUploadModal = ({
           <Flex direction="column" alignItems="center">
             <LogView />
             {questionnaire ? (
-              <ContinueButton questionnaire={questionnaire} />
+              <ContinueButton api={api} questionnaire={questionnaire} />
             ) : null}
           </Flex>
         </ModalBody>
@@ -89,15 +91,17 @@ const StatusBadge = ({ status }: { status: UploadState }) => {
 
 const ContinueButton = ({
   questionnaire,
+  api,
 }: {
   questionnaire: Questionnaire;
+  api: APIProvider;
 }) => {
   const status = useStore(questionnaire.$status);
   if (status === UploadState.SUCCESS) {
     return (
       <Button
         as="a"
-        href="https://google.com"
+        href={api.getQuestionnaireLink(questionnaire)}
         colorScheme="green"
         marginTop={4}
         width="full"

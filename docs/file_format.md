@@ -8,6 +8,7 @@ The exact structure of the file is specified in [a below section](#the-manifestj
 
 ```json
 {
+  "name": "This is my exam questions",
   "questions": [
     {
       "type": "basic",
@@ -22,7 +23,7 @@ The exact structure of the file is specified in [a below section](#the-manifestj
           "correct": false
         },
         {
-          "content": "Ingen af ovenstående",
+          "content": "None of the above",
           "correct": false
         }
       ]
@@ -30,7 +31,7 @@ The exact structure of the file is specified in [a below section](#the-manifestj
     {
       "type": "matrix",
       "content": "Pick a card, any card",
-      "columns": ["Sandt", "Falskt", "Ubeviseligt"],
+      "columns": ["True", "False", "Undecidable"],
       "answers": [
         {
           "content": "Opt. 1",
@@ -162,6 +163,7 @@ Describes the entire exam, as should be uploaded by the extension.
 
 ```typescript
 type Manifest = {
+  name?: string; // optional
   questions: (BasicQuestion | MatrixQuestion)[];
 };
 ```

@@ -1,3 +1,4 @@
+import { Questionnaire } from "../../models/questionnaire";
 import {
   deleteQuestionGroup,
   type apiBasicQuestion,
@@ -105,7 +106,25 @@ export async function clearQuestionnaire(id: string) {
   }
 }
 
+/** Sets the title of the given questionnaire */
+export async function setQuestionnaireName(id: string, name: string) {
+  await callAPI(`/data/questionnaire/${id}`, {
+    method: "PUT",
+    mode: "cors",
+    credentials: "include",
+    body: JSON.stringify(name),
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
 export function getQuestionnaireIdFromUrl(url = location.pathname) {
   const [, questionnaireId] = /\/edit\/([^\/]+)\/?/.exec(url) || [];
   return questionnaireId || null;
+}
+
+export function getQuestionnaireLink(model: Questionnaire) {
+  if (!model.id) {
+    throw new Error("Cannot get URL for model without id");
+  }
+  return `/edit/${model.id}`;
 }

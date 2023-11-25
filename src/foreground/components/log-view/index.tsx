@@ -53,9 +53,11 @@ const LogView = () => {
         },
       }}
     >
-      {lines.map((line, i) => (
-        <Line line={line} key={i} />
-      ))}
+      <code>
+        {lines.map((line, i) => (
+          <Line line={line} key={i} />
+        ))}
+      </code>
     </Box>
   );
 };
@@ -94,5 +96,10 @@ const Line = ({ line }: { line: LogLine }) => {
   };
 
   const { badgeColor, badgeText, textColor } = lookup[line.type];
-  return <Text color={textColor}>{line.message}</Text>;
+  return (
+    <Text as="span" color={textColor}>
+      {line.message}
+      {`\n`}
+    </Text>
+  );
 };

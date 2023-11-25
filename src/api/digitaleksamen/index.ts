@@ -1,4 +1,3 @@
-import { useModalStyles } from "@chakra-ui/react";
 import {
   QuestionType,
   type Question,
@@ -7,7 +6,7 @@ import {
 } from "../../models/question";
 import { type Questionnaire } from "../../models/questionnaire";
 import { UploadState } from "../../models/shared";
-import { type QuestionnaireUploader } from "../types";
+import { APIProvider, type QuestionnaireUploader } from "../types";
 import {
   addBasicAnswer,
   addMatrixRow,
@@ -15,7 +14,12 @@ import {
   markMatrixAnswerAsCorrect,
 } from "./answers";
 import { setContentWithImages } from "./content";
-import { clearQuestionnaire, createQuestionnaire } from "./questionnaire";
+import {
+  clearQuestionnaire,
+  createQuestionnaire,
+  setQuestionnaireName,
+  getQuestionnaireLink,
+} from "./questionnaire";
 import {
   addBasicQuestion,
   addMatrixColumn,
@@ -37,6 +41,11 @@ export const uploadQuestionnaire: QuestionnaireUploader = async (model) => {
     } else {
       logInfo(`Clearing existing questionnaire ${model.id}`);
       await clearQuestionnaire(model.id);
+    }
+
+    // set info on the questionnaire itself
+    if (model.schema.name) {
+      await setQuestionnaireName(model.id!, model.schema.name);
     }
 
     // upload each of the questions
@@ -171,3 +180,9 @@ async function uploadMatrixQuestion(
     throw e;
   }
 }
+
+const provider: APIProvider = {
+  uploadQuestionnaire,
+  getQuestionnaireLink,
+};
+export default provider;
