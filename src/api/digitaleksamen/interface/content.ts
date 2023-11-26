@@ -1,5 +1,5 @@
 import { uploadImage } from "./images";
-import { callAPI } from "./shared";
+import { callAPI } from "../shared";
 
 /** Sets the content of the given content field */
 export async function setContent(contentId: string, content: string) {

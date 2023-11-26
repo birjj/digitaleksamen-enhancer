@@ -1,4 +1,4 @@
-import { callAPI, callJSON } from "./shared";
+import { callAPI, callJSON } from "../shared";
 
 export type apiQuestionGroup = {
   ContentId: string;

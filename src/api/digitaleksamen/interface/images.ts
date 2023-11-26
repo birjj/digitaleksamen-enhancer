@@ -1,4 +1,4 @@
-import { callJSON, getCookie, setCookie } from "./shared";
+import { callJSON, getCookie, setCookie } from "../shared";
 
 type UploadedFile = File & { uploadedUrl?: string };
 

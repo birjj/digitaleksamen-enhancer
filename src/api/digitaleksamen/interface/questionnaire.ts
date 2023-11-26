@@ -1,10 +1,10 @@
-import { Questionnaire } from "../../models/questionnaire";
+import { Questionnaire } from "../../../models/questionnaire";
 import {
   deleteQuestionGroup,
   type apiBasicQuestion,
   type apiMatrixQuestion,
 } from "./questions";
-import { callAPI, callJSON } from "./shared";
+import { callAPI, callJSON } from "../shared";
 
 export type apiQuestionnaire = {
   Id: string;
