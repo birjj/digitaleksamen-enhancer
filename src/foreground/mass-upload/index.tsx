@@ -7,7 +7,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import LogoIcon from "../components/logo";
-import MassUploadModal from "./modal";
+import MassUploadModal from "../components/mass-upload-modal";
 import { QuestionIcon } from "@chakra-ui/icons";
 import FileButton from "../components/file-button";
 import { logError, resetLog } from "../../api/log";
