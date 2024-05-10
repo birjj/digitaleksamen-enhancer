@@ -52,7 +52,7 @@ To use you'll need a valid `manifest.json` file (you can use [the examples](/exa
 1. Download the file ending in ".zip"
 1. Extract the ZIP file somewhere
 1. Navigate to `chrome://extensions` in your browser and enable developer mode (toggle in top-right)
-1. Click "Load unpacked" and choose the `dist` folder from the extracted ZIP file
+1. Click "Load unpacked" and choose the folder you extracted the ZIP content into (it should contain `manifest.json` at its root)
 
 </td><td>
 
