@@ -10,13 +10,13 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { type Questionnaire } from "../../models/questionnaire";
+import { type Questionnaire } from "../../../models/questionnaire";
 import { useStore } from "@nanostores/react";
-import { UploadState } from "../../models/shared";
-import LogView from "../components/log-view";
+import { UploadState } from "../../../models/shared";
+import LogView from "../log-view";
 import { atom } from "nanostores";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { APIProvider } from "../../api/types";
+import { APIProvider } from "../../../api/types";
 
 type MassUploadModalProps = {
   onClose: () => void;

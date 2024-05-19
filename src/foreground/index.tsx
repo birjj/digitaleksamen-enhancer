@@ -7,6 +7,7 @@ import "./style.module.css";
 
 import InjectionObserver from "./observer";
 import { injectMassUploadBtn } from "./mass-upload";
+import { injectAddQuestionsBtn } from "./add-questions-btn";
 
 // start observing the DOM
-new InjectionObserver([injectMassUploadBtn]);
+new InjectionObserver([injectMassUploadBtn, injectAddQuestionsBtn]);

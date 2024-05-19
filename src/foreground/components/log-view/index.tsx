@@ -1,8 +1,7 @@
 import { useStore } from "@nanostores/react";
-import React, { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { LogLine, LogType, logStore } from "../../../api/log";
-import { Badge, Box, Text } from "@chakra-ui/react";
-import { UploadState } from "../../../models/shared";
+import { Box, Text } from "@chakra-ui/react";
 
 const LogView = () => {
   const lines = useStore(logStore);

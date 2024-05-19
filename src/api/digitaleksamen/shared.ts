@@ -1,5 +1,3 @@
-import { uploadImage } from "./images";
-
 /** Calls an API endpoint, appending the relevant headers and failing if the response code isn't successful */
 export const callAPI: typeof fetch = async (input, init) => {
   const userGUID = getUserGuid();
